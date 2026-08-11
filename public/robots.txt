@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://libro-de-actas-teologicas.jimenezfabian9512.workers.dev/sitemap.xml

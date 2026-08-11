@@ -86,3 +86,13 @@ Para ajustar la paleta o la tipografía, todo vive en las variables al inicio de
 - **Búsqueda** (`/buscar`): índice Pagefind generado en cada build (el comando `npm run build` ya lo incluye).
 - **Backlinks**: las menciones de otras actas por título se enlazan solas, y cada acta muestra "Citada en" al pie.
 - **RSS** en `/rss.xml`, **sitemap** en `/sitemap.xml`, página **404** propia.
+
+## Publicar una acta nueva (sin ayuda externa)
+
+```bash
+node herramientas/convertir-acta.mjs mi-borrador.md --serie olivo --orden 5 --loci "Eclesiología"
+npm run dev          # revisarla en localhost:4321 (entra como borrador)
+# completar resumen y pasajes en el frontmatter, poner borrador: false
+npm run build && npx wrangler@4.120.1 deploy
+git add . && git commit -m "Acta nueva" && git push
+```

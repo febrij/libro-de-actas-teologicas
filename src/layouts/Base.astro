@@ -11,6 +11,9 @@ const imagenAbs = new URL(imagen, Astro.site).href;
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content={descripcion} />
     <title>{titulo}</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="theme-color" content="#9c2b23" />
+    <link rel="alternate" type="application/rss+xml" title="Libro de actas" href="/rss.xml" />
     <link rel="canonical" href={new URL(Astro.url.pathname, Astro.site)} />
     <meta property="og:title" content={titulo} />
     <meta property="og:description" content={descripcion} />

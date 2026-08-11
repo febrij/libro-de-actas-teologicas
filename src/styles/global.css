@@ -312,7 +312,7 @@ h2:hover .ancla, h3:hover .ancla { color: var(--rubrica); }
 [data-tema="sepia"] {
   --papel: #f3ebdb;
   --tinta: #3b2f23;
-  --tinta-suave: #7d6c56;
+  --tinta-suave: #6f5f46;
   --rubrica: #8f2a1d;
   --hairline: #ded2b9;
   --tinte: #ebdfc8;
@@ -529,4 +529,10 @@ article.acta h2::before {
 
   h2, h3 { break-after: avoid; }
   .acta-cabecera { break-after: avoid; }
+}
+
+/* ---------- foco visible con identidad ---------- */
+a:focus-visible, button:focus-visible, summary:focus-visible, .pas:focus-visible {
+  outline: 2px solid var(--rubrica);
+  outline-offset: 2px;
 }
