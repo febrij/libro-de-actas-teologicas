@@ -296,3 +296,10 @@ h2:hover .ancla, h3:hover .ancla { color: var(--rubrica); }
 .acta-nav .dir { display: block; font-family: var(--caps); font-size: 0.68rem; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; color: var(--rubrica); margin-bottom: 0.2rem; }
 .acta-nav .cual { font-size: 0.95rem; font-weight: 600; }
 .acta-nav .sig { margin-left: auto; text-align: right; }
+
+
+/* ---------- portada: bloques por serie ---------- */
+.serie-bloque { margin-bottom: 3.6rem; }
+.serie-tag b { color: var(--rubrica); }
+.serie-lema { margin: 0.35rem 0 1.1rem; color: var(--tinta-suave); font-size: 0.95rem; max-width: 38rem; }
+.portada-lema { margin-bottom: 3rem; }

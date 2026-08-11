@@ -1,6 +1,6 @@
 ---
 import '../styles/global.css';
-const { titulo = 'Un pueblo, un pacto, una venida', descripcion = 'Actas teológicas' } = Astro.props;
+const { titulo = 'Libro de actas', descripcion = 'Actas teológicas verificables — una obra de cazador de ídolos' } = Astro.props;
 ---
 <!doctype html>
 <html lang="es">
@@ -14,7 +14,7 @@ const { titulo = 'Un pueblo, un pacto, una venida', descripcion = 'Actas teológ
     <meta property="og:description" content={descripcion} />
     <meta property="og:type" content="article" />
     <meta property="og:url" content={new URL(Astro.url.pathname, Astro.site)} />
-    <meta property="og:site_name" content="Un pueblo, un pacto, una venida" />
+    <meta property="og:site_name" content="Libro de actas" />
     <meta property="og:locale" content="es" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -25,12 +25,13 @@ const { titulo = 'Un pueblo, un pacto, una venida', descripcion = 'Actas teológ
       <header class="sitio">
         <a class="marca" href="/">Libro de actas</a>
         <nav>
+          <a href="/obra/indice-maestro">Mapa de la obra</a>
           <a href="/indice-pasajes">Índice de pasajes</a>
         </nav>
       </header>
       <slot />
       <footer class="sitio">
-        <span>Una serie de <em>cazador de ídolos</em></span>
+        <span>Una obra de <em>cazador de ídolos</em></span>
         <span>Soli Deo gloria</span>
       </footer>
     </div>

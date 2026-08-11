@@ -1,28 +1,58 @@
 ---
 import Base from '../layouts/Base.astro';
 import { getCollection } from 'astro:content';
-import { romano, fechaLarga } from '../lib/util';
+import { romano, fechaLarga, SERIES } from '../lib/util';
 
 const actas = (await getCollection('actas', ({ data }) => !data.borrador))
   .sort((a, b) => a.data.orden - b.data.orden);
+const documentos = (await getCollection('documentos'))
+  .sort((a, b) => a.data.orden - b.data.orden);
+const series = (['olivo', 'cimientos'] as const).filter((s) => actas.some((a) => a.data.serie === s));
 ---
 <Base>
-  <p class="eyebrow"><b>Serie teológica</b> · sistemática en orden canónico</p>
-  <h1 class="portada-titulo">Un pueblo, un pacto, una venida</h1>
-  <p class="portada-lema">Actas de un examen de los loci teológicos, de la Bibliología a la Escatología, con las fuentes a la vista.</p>
+  <p class="eyebrow"><b>cazador de ídolos</b> · actas verificables</p>
+  <h1 class="portada-titulo">Libro de actas</h1>
+  <p class="portada-lema">Una sola obra, tres series — cada afirmación rastreable hasta un pasaje abierto o una fuente citada con autor, obra y año.</p>
 
-  <ol class="registro">
-    {actas.map((acta) => (
-      <li>
-        <a href={`/actas/${acta.id}`}>
-          <span class="num">{romano(acta.data.orden)}</span>
-          <span>
-            <span class="meta">{acta.data.loci} · {fechaLarga(acta.data.fecha)}</span>
-            <h3>{acta.data.titulo}</h3>
-            <p>{acta.data.resumen}</p>
-          </span>
-        </a>
-      </li>
-    ))}
-  </ol>
+  {series.map((s) => (
+    <section class="serie-bloque">
+      <p class="eyebrow serie-tag"><b>{SERIES[s].nombre}</b></p>
+      <p class="serie-lema">{SERIES[s].lema}</p>
+      <ol class="registro">
+        {actas.filter((a) => a.data.serie === s).map((acta) => (
+          <li>
+            <a href={`/actas/${acta.id}`}>
+              <span class="num">{romano(acta.data.orden)}</span>
+              <span>
+                <span class="meta">{acta.data.loci} · {fechaLarga(acta.data.fecha)}</span>
+                <h3>{acta.data.titulo}</h3>
+                <p>{acta.data.resumen}</p>
+              </span>
+            </a>
+          </li>
+        ))}
+      </ol>
+    </section>
+  ))}
+
+  {documentos.length > 0 && (
+    <section class="serie-bloque">
+      <p class="eyebrow serie-tag"><b>La obra</b></p>
+      <p class="serie-lema">El mapa y el plan: dónde encaja cada acta y qué viene después.</p>
+      <ol class="registro">
+        {documentos.map((doc) => (
+          <li>
+            <a href={`/obra/${doc.id}`}>
+              <span class="num">§</span>
+              <span>
+                <span class="meta">Documento · {fechaLarga(doc.data.fecha)}</span>
+                <h3>{doc.data.titulo}</h3>
+                <p>{doc.data.resumen}</p>
+              </span>
+            </a>
+          </li>
+        ))}
+      </ol>
+    </section>
+  )}
 </Base>

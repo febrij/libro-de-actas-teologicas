@@ -5,7 +5,7 @@ import Gloss from '../../components/Gloss.astro';
 import Careo from '../../components/Careo.astro';
 import Conf from '../../components/Conf.astro';
 import { getCollection, render } from 'astro:content';
-import { romano, fechaLarga } from '../../lib/util';
+import { romano, fechaLarga, SERIES } from '../../lib/util';
 
 export async function getStaticPaths() {
   const actas = await getCollection('actas', ({ data }) => !data.borrador);
@@ -16,8 +16,9 @@ const { acta } = Astro.props;
 const { Content, headings } = await render(acta);
 const d = acta.data;
 
-// Acta anterior y siguiente, por orden
+// Acta anterior y siguiente, por orden dentro de la misma serie
 const todas = (await getCollection('actas', ({ data }) => !data.borrador))
+  .filter((a) => a.data.serie === d.serie)
   .sort((a, b) => a.data.orden - b.data.orden);
 const i = todas.findIndex((a) => a.id === acta.id);
 const anterior = i > 0 ? todas[i - 1] : null;
@@ -36,7 +37,7 @@ const urlEn = `https://translate.google.com/translate?sl=es&tl=en&u=${encodeURIC
 ---
 <Base titulo={`Acta ${romano(d.orden)} · ${d.titulo}`} descripcion={d.resumen}>
   <div class="acta-cabecera">
-    <p class="eyebrow">Un pueblo, un pacto, una venida</p>
+    <p class="eyebrow">{SERIES[d.serie].nombre}</p>
     <div class="numeral"><small>Acta</small>{romano(d.orden)}</div>
     <h1>{d.titulo}</h1>
     {d.subtitulo && <p class="sub">{d.subtitulo}</p>}

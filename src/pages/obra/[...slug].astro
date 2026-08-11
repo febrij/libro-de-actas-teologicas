@@ -1,0 +1,56 @@
+---
+import Base from '../../layouts/Base.astro';
+import Nota from '../../components/Nota.astro';
+import Gloss from '../../components/Gloss.astro';
+import Careo from '../../components/Careo.astro';
+import Conf from '../../components/Conf.astro';
+import { getCollection, render } from 'astro:content';
+import { fechaLarga } from '../../lib/util';
+
+export async function getStaticPaths() {
+  const docs = await getCollection('documentos');
+  return docs.map((doc) => ({ params: { slug: doc.id }, props: { doc } }));
+}
+
+const { doc } = Astro.props;
+const { Content, headings } = await render(doc);
+const d = doc.data;
+const indice = headings.filter((h) => h.depth === 2 || h.depth === 3);
+---
+<Base titulo={d.titulo} descripcion={d.resumen}>
+  <div class="acta-cabecera">
+    <p class="eyebrow">La obra · documento</p>
+    <h1>{d.titulo}</h1>
+    {d.subtitulo && <p class="sub">{d.subtitulo}</p>}
+    <div class="acta-meta">
+      <span>Actualizado el <b>{fechaLarga(d.fecha)}</b></span>
+    </div>
+  </div>
+
+  {indice.length > 2 && (
+    <details class="toc">
+      <summary>Índice del documento</summary>
+      <ol>
+        {indice.map((h) => (
+          <li class={`toc-${h.depth}`}><a href={`#${h.slug}`}>{h.text}</a></li>
+        ))}
+      </ol>
+    </details>
+  )}
+
+  <article class="acta">
+    <Content components={{ Nota, Gloss, Careo, Conf }} />
+  </article>
+
+  <script>
+    document.querySelectorAll('article.acta table').forEach((t) => {
+      const ths = [...t.querySelectorAll('thead th')].map((th) => th.textContent.trim());
+      if (!ths.length) return;
+      t.querySelectorAll('tbody tr').forEach((tr) => {
+        [...tr.children].forEach((td, i) => {
+          if (i > 0 && ths[i]) td.setAttribute('data-label', ths[i]);
+        });
+      });
+    });
+  </script>
+</Base>

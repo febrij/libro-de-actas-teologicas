@@ -1,13 +1,13 @@
 ---
 import Base from '../layouts/Base.astro';
 import { getCollection } from 'astro:content';
-import { romano, CANON, separaCita } from '../lib/util';
+import { romano, CANON, separaCita, SERIES } from '../lib/util';
 
 const actas = (await getCollection('actas', ({ data }) => !data.borrador))
   .sort((a, b) => a.data.orden - b.data.orden);
 
 // Agrupa todas las citas del frontmatter `pasajes` por libro, en orden canónico
-type Fila = { ref: string; actas: { id: string; num: string }[] };
+type Fila = { ref: string; actas: { id: string; num: string; serie: string }[] };
 const porLibro = new Map<string, Map<string, Fila>>();
 
 for (const acta of actas) {
@@ -16,7 +16,7 @@ for (const acta of actas) {
     if (!porLibro.has(libro)) porLibro.set(libro, new Map());
     const filas = porLibro.get(libro)!;
     if (!filas.has(ref)) filas.set(ref, { ref, actas: [] });
-    filas.get(ref)!.actas.push({ id: acta.id, num: romano(acta.data.orden) });
+    filas.get(ref)!.actas.push({ id: acta.id, num: romano(acta.data.orden), serie: SERIES[acta.data.serie].corto });
   }
 }
 
@@ -41,7 +41,7 @@ const libros = [...porLibro.keys()].sort((a, b) => {
               {fila.actas.map((a, i) => (
                 <>
                   {i > 0 && ' · '}
-                  <a href={`/actas/${a.id}`}>Acta {a.num}</a>
+                  <a href={`/actas/${a.id}`}>{a.serie} · {a.num}</a>
                 </>
               ))}
             </span>

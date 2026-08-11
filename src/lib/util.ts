@@ -15,3 +15,18 @@ export function separaCita(cita: string): { libro: string; ref: string } {
   const m = cita.trim().match(/^(.+?)\s+(\d.*)$/);
   return m ? { libro: m[1], ref: m[2] } : { libro: cita.trim(), ref: '' };
 }
+
+
+export const SERIES = {
+  olivo: {
+    nombre: 'Serie del olivo',
+    corto: 'Olivo',
+    lema: 'La serie pública: teología, comisión, limpieza de mesa y careo mesiánico — el arco que se recorre de principio a fin.',
+  },
+  cimientos: {
+    nombre: 'Serie Cimientos',
+    corto: 'Cimientos',
+    lema: 'Los loci de la sistemática en modo bíblico directo: la auditoría de las premisas sobre las que la serie del olivo se construyó.',
+  },
+} as const;
+export type SerieId = keyof typeof SERIES;
