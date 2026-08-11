@@ -52,7 +52,7 @@ const urlEn = `https://translate.google.com/translate?sl=es&tl=en&u=${encodeURIC
 
   {indice.length > 2 && (
     <details class="toc">
-      <summary>Índice de la acta</summary>
+      <summary>Índice del acta</summary>
       <ol>
         {indice.map((h) => (
           <li class={`toc-${h.depth}`}><a href={`#${h.slug}`}>{h.text}</a></li>
