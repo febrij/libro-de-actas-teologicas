@@ -556,3 +556,15 @@ a:focus-visible, button:focus-visible, summary:focus-visible, .pas:focus-visible
 .ber-sig:hover { color: var(--papel); opacity: 0.92; }
 .ber-pie { font-family: var(--caps); font-size: 0.72rem; color: var(--tinta-suave); border-top: 1px solid var(--hairline); padding-top: 0.7rem; margin: 0; }
 .ber-pie a { color: var(--rubrica); text-decoration: none; }
+
+/* práctica: modos y variantes */
+.ber-modos { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: -1.4rem 0 1.2rem; }
+.ber-modos button {
+  font-family: var(--caps); font-size: 0.75rem; font-weight: 500;
+  background: transparent; color: var(--tinta);
+  border: 1px solid var(--hairline); border-radius: 999px;
+  padding: 0.35rem 0.9rem; cursor: pointer;
+}
+.ber-modos button[aria-pressed="true"] { background: var(--tinta); color: var(--papel); border-color: var(--tinta); }
+.ber-ref.ber-tesis { font-size: clamp(1.15rem, 3vw, 1.5rem); color: var(--tinta); line-height: 1.35; }
+.ber-inv { font-size: 1.05rem; line-height: 1.7; }
