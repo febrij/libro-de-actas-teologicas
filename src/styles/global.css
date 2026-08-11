@@ -568,3 +568,41 @@ a:focus-visible, button:focus-visible, summary:focus-visible, .pas:focus-visible
 .ber-modos button[aria-pressed="true"] { background: var(--tinta); color: var(--papel); border-color: var(--tinta); }
 .ber-ref.ber-tesis { font-size: clamp(1.15rem, 3vw, 1.5rem); color: var(--tinta); line-height: 1.35; }
 .ber-inv { font-size: 1.05rem; line-height: 1.7; }
+
+
+/* ---------- observaciones al margen ---------- */
+.obs-btn {
+  position: fixed; z-index: 70; display: none;
+  font-family: var(--caps); font-size: 0.72rem; font-weight: 600; letter-spacing: 0.05em;
+  background: var(--tinta); color: var(--papel);
+  border: 0; border-radius: 999px; padding: 0.4rem 0.85rem; cursor: pointer;
+  box-shadow: 0 3px 12px rgba(0,0,0,0.2);
+}
+.obs-dlg {
+  position: fixed; z-index: 80; left: 50%; bottom: 1.2rem; transform: translateX(-50%);
+  width: min(30rem, calc(100vw - 2rem));
+  background: var(--papel); color: var(--tinta);
+  border: 1px solid var(--hairline); box-shadow: 0 8px 30px rgba(0,0,0,0.2);
+  padding: 1rem 1.1rem; display: none;
+}
+.obs-dlg.visible { display: block; }
+.obs-dlg h5 { margin: 0 0 0.5rem; display: flex; justify-content: space-between; font-family: var(--caps); font-size: 0.6875rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--rubrica); }
+.obs-x { background: none; border: 0; color: var(--tinta-suave); font-size: 1rem; cursor: pointer; }
+.obs-cita { margin: 0 0 0.6rem; padding-left: 0.7rem; border-left: 2px solid var(--rubrica); font-style: italic; font-size: 0.85rem; color: var(--tinta-suave); }
+.obs-dlg textarea, .obs-dlg input[type="text"] {
+  width: 100%; box-sizing: border-box; margin-bottom: 0.45rem;
+  background: transparent; color: var(--tinta);
+  border: 1px solid var(--hairline); padding: 0.5rem 0.6rem;
+  font-family: var(--serif); font-size: 0.9rem;
+}
+.obs-web { position: absolute; left: -9999px; }
+.obs-pieb { display: flex; justify-content: space-between; align-items: center; gap: 0.6rem; }
+.obs-aviso { font-family: var(--caps); font-size: 0.72rem; color: var(--tinta-suave); }
+.obs-ok {
+  position: fixed; z-index: 90; left: 50%; bottom: 1.2rem; transform: translateX(-50%);
+  background: var(--tinta); color: var(--papel);
+  font-family: var(--caps); font-size: 0.78rem;
+  padding: 0.6rem 1.1rem; border-radius: 999px;
+}
+.obs-pista { max-width: var(--col-lectura); margin-top: 2.6rem; font-family: var(--caps); font-size: 0.72rem; letter-spacing: 0.04em; color: var(--tinta-suave); }
+@media print { .obs-btn, .obs-dlg, .obs-ok, .obs-pista { display: none !important; } }

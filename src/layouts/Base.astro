@@ -206,6 +206,94 @@ const imagenAbs = new URL(imagen, Astro.site).href;
       });
       addEventListener('scroll', () => { if (pop?.classList.contains('visible') && pasActivo) colocar(pasActivo); }, { passive: true });
 
+      // ---------- Observaciones al margen: seleccionar texto -> observar ----------
+      let obsBtn = null, obsDlg = null, obsDatos = null;
+      function btnObs() {
+        if (!obsBtn) {
+          obsBtn = document.createElement('button');
+          obsBtn.className = 'obs-btn'; obsBtn.type = 'button'; obsBtn.textContent = '✎ Observar';
+          obsBtn.addEventListener('mousedown', (e) => e.preventDefault());
+          obsBtn.addEventListener('click', abrirObs);
+          document.body.appendChild(obsBtn);
+        }
+        return obsBtn;
+      }
+      function seccionDe(nodo) {
+        let el = nodo.nodeType === 1 ? nodo : nodo.parentElement;
+        while (el && !el.matches?.('article.acta')) {
+          let prev = el.previousElementSibling;
+          while (prev) {
+            if (/^H[23]$/.test(prev.tagName) && prev.id) return prev.id;
+            prev = prev.previousElementSibling;
+          }
+          el = el.parentElement;
+        }
+        return '';
+      }
+      document.addEventListener('selectionchange', () => {
+        const sel = getSelection();
+        const dentro = sel && !sel.isCollapsed && sel.anchorNode &&
+          (sel.anchorNode.nodeType === 1 ? sel.anchorNode : sel.anchorNode.parentElement)?.closest?.('article.acta');
+        if (dentro && sel.toString().trim().length > 3) {
+          const r = sel.getRangeAt(0).getBoundingClientRect();
+          const b = btnObs();
+          b.style.display = 'block';
+          b.style.left = Math.max(8, Math.min(innerWidth - 120, r.left + r.width / 2 - 50)) + 'px';
+          b.style.top = Math.max(8, r.top - 42) + 'px';
+          obsDatos = {
+            cita: sel.toString().slice(0, 1200),
+            seccion: seccionDe(sel.anchorNode),
+            acta: location.pathname,
+            url: location.origin + location.pathname + (seccionDe(sel.anchorNode) ? '#' + seccionDe(sel.anchorNode) : ''),
+          };
+        } else if (obsBtn) obsBtn.style.display = 'none';
+      });
+      function abrirObs() {
+        obsBtn.style.display = 'none';
+        if (!obsDlg) {
+          obsDlg = document.createElement('div');
+          obsDlg.className = 'obs-dlg';
+          obsDlg.innerHTML = `
+            <h5>Observación al margen <button type="button" class="obs-x" aria-label="Cerrar">×</button></h5>
+            <blockquote class="obs-cita"></blockquote>
+            <textarea class="obs-texto" rows="4" maxlength="4000" placeholder="Corrección de dato, texto o atribución; o tu observación. Llega en privado al autor."></textarea>
+            <input class="obs-nombre" type="text" maxlength="120" placeholder="Nombre (opcional)">
+            <input class="obs-contacto" type="text" maxlength="200" placeholder="Correo o contacto (opcional, por si hay que responderte)">
+            <input class="obs-web" type="text" tabindex="-1" autocomplete="off" aria-hidden="true">
+            <div class="obs-pieb"><span class="obs-aviso"></span><button type="button" class="obs-enviar ber-btn ber-sig">Enviar</button></div>`;
+          document.body.appendChild(obsDlg);
+          obsDlg.querySelector('.obs-x').addEventListener('click', () => obsDlg.classList.remove('visible'));
+          obsDlg.querySelector('.obs-enviar').addEventListener('click', enviarObs);
+        }
+        obsDlg.querySelector('.obs-cita').textContent = '“' + obsDatos.cita.slice(0, 220) + (obsDatos.cita.length > 220 ? '…' : '') + '”';
+        obsDlg.querySelector('.obs-aviso').textContent = '';
+        obsDlg.classList.add('visible');
+        obsDlg.querySelector('.obs-texto').focus();
+      }
+      async function enviarObs() {
+        const aviso = obsDlg.querySelector('.obs-aviso');
+        const cuerpo = {
+          ...obsDatos,
+          comentario: obsDlg.querySelector('.obs-texto').value.trim(),
+          nombre: obsDlg.querySelector('.obs-nombre').value.trim(),
+          contacto: obsDlg.querySelector('.obs-contacto').value.trim(),
+          web: obsDlg.querySelector('.obs-web').value,
+        };
+        if (cuerpo.comentario.length < 5) { aviso.textContent = 'Escribe la observación primero.'; return; }
+        aviso.textContent = 'Enviando…';
+        try {
+          const r = await fetch('/api/observacion', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(cuerpo) });
+          if (!r.ok) throw 0;
+          aviso.textContent = '';
+          obsDlg.querySelector('.obs-texto').value = '';
+          obsDlg.classList.remove('visible');
+          const ok = document.createElement('div');
+          ok.className = 'obs-ok'; ok.textContent = 'Recibida. Entra al registro para adjudicación — gracias, bereano.';
+          document.body.appendChild(ok);
+          setTimeout(() => ok.remove(), 3500);
+        } catch { aviso.textContent = 'No se pudo enviar. Intenta de nuevo.'; }
+      }
+
       document.addEventListener('astro:page-load', iniciar);
     </script>
   </body>

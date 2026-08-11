@@ -1,8 +1,17 @@
 {
   "name": "libro-de-actas-teologicas",
+  "main": "worker/index.js",
   "compatibility_date": "2026-08-11",
   "assets": {
     "directory": "./dist",
+    "binding": "ASSETS",
     "not_found_handling": "404-page"
-  }
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "actas-observaciones",
+      "database_id": "4cbcb5c3-a932-4a59-9855-1f762edbff40"
+    }
+  ]
 }

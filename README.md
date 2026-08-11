@@ -96,3 +96,18 @@ npm run dev          # revisarla en localhost:4321 (entra como borrador)
 npm run build && npx wrangler@4.120.1 deploy
 git add . && git commit -m "Acta nueva" && git push
 ```
+
+## Observaciones de lectores (privadas)
+
+Configuración única (una sola vez, en la Terminal):
+
+```bash
+npx wrangler@4.120.1 d1 create actas-observaciones          # 1) imprime un database_id
+# 2) pega ese id en wrangler.jsonc donde dice PEGAR-AQUI-EL-ID
+npx wrangler@4.120.1 d1 execute actas-observaciones --remote --file=worker/esquema.sql   # 3) crea la tabla
+npx wrangler@4.120.1 secret put CLAVE                        # 4) escribe tu clave privada cuando la pida
+npm run build && npx wrangler@4.120.1 deploy
+```
+
+Leerlas: `https://<tu-sitio>/api/observaciones?clave=TU-CLAVE` (guárdala como marcador; no la compartas).
+También por consola: `npx wrangler@4.120.1 d1 execute actas-observaciones --remote --command "SELECT fecha, acta, comentario FROM observaciones ORDER BY fecha DESC LIMIT 20"`.
