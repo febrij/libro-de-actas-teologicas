@@ -1,7 +1,8 @@
 ---
 import { ClientRouter } from 'astro:transitions';
 import '../styles/global.css';
-const { titulo = 'Libro de actas', descripcion = 'Actas teológicas verificables — una obra de cazador de ídolos' } = Astro.props;
+const { titulo = 'Libro de actas', descripcion = 'Actas teológicas verificables — una obra de cazador de ídolos', imagen = '/og/portada.png' } = Astro.props;
+const imagenAbs = new URL(imagen, Astro.site).href;
 ---
 <!doctype html>
 <html lang="es">
@@ -17,6 +18,11 @@ const { titulo = 'Libro de actas', descripcion = 'Actas teológicas verificables
     <meta property="og:url" content={new URL(Astro.url.pathname, Astro.site)} />
     <meta property="og:site_name" content="Libro de actas" />
     <meta property="og:locale" content="es" />
+    <meta property="og:image" content={imagenAbs} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:image" content={imagenAbs} />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <ClientRouter />
@@ -44,7 +50,7 @@ const { titulo = 'Libro de actas', descripcion = 'Actas teológicas verificables
       </header>
       <slot />
       <footer class="sitio">
-        <span>Una obra de <em>cazador de ídolos</em></span>
+        <a class="pie-marca" href="https://fjcaw.substack.com" rel="me noopener" target="_blank">Una obra de <em>cazador de ídolos</em> ↗</a>
         <span>Soli Deo gloria</span>
       </footer>
     </div>

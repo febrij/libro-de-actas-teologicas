@@ -47,7 +47,7 @@ const indice = headings.filter((h) => h.depth === 2 || h.depth === 3);
 const urlActa = new URL(Astro.url.pathname, Astro.site).href;
 const urlEn = `https://translate.google.com/translate?sl=es&tl=en&u=${encodeURIComponent(urlActa)}`;
 ---
-<Base titulo={`Acta ${romano(d.orden)} · ${d.titulo}`} descripcion={d.resumen}>
+<Base titulo={`Acta ${romano(d.orden)} · ${d.titulo}`} descripcion={d.resumen} imagen={`/og/${acta.id}.png`}>
   <div class="acta-cabecera">
     <p class="eyebrow">{SERIES[d.serie].nombre}</p>
     <div class="numeral" transition:name={`num-${d.serie}-${d.orden}`}><small>Acta</small>{romano(d.orden)}</div>

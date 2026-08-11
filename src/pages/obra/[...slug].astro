@@ -19,7 +19,7 @@ const { Content, headings } = await render(doc);
 const d = doc.data;
 const indice = headings.filter((h) => h.depth === 2 || h.depth === 3);
 ---
-<Base titulo={d.titulo} descripcion={d.resumen}>
+<Base titulo={d.titulo} descripcion={d.resumen} imagen={`/og/obra-${doc.id}.png`}>
   <div class="acta-cabecera">
     <p class="eyebrow">La obra · documento</p>
     <h1>{d.titulo}</h1>

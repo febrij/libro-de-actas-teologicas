@@ -472,3 +472,58 @@ article.acta h2 + p::first-line {
 #buscador { max-width: var(--col-lectura); }
 #buscador .pagefind-ui { --pagefind-ui-primary: var(--rubrica); --pagefind-ui-text: var(--tinta); --pagefind-ui-background: var(--papel); --pagefind-ui-border: var(--hairline); --pagefind-ui-tag: var(--tinte); --pagefind-ui-border-radius: 2px; --pagefind-ui-font: var(--serif); }
 .enlace-acta { font-style: inherit; }
+
+.pie-marca { text-decoration: none; }
+.pie-marca:hover { color: var(--rubrica); }
+
+/* ============================================================
+   Impresión: el acta como documento, sin interfaz
+   ============================================================ */
+@media print {
+  :root, [data-tema="sepia"], [data-tema="noche"] {
+    --papel: #fff; --tinta: #000; --tinta-suave: #444;
+    --rubrica: #8f2a1d; --hairline: #bbb; --tinte: #f0f0f0;
+  }
+  @page { margin: 2cm; }
+  body { font-size: 10.5pt; line-height: 1.55; }
+  header.sitio, footer.sitio, .toc, .progreso, .tema-btn, .acta-nav, .citada,
+  .ancla, .careo-chips, .acta-meta a, .plegable summary { display: none !important; }
+  .plegable { border: 0; } .plegable-cuerpo { padding: 0; }
+  .plegable:not([open]) .plegable-cuerpo { display: block; }
+  details.plegable { display: block; }
+  .marco { max-width: none; padding: 0; }
+  article.acta > * { max-width: none; }
+
+  /* notas al margen -> bloques integrados tras su referencia */
+  .nota {
+    display: block !important; float: none; width: auto; margin: 0.35rem 0 0.6rem;
+    padding: 0.3rem 0 0.3rem 0.7rem; border-left: 2px solid var(--rubrica);
+    font-size: 8.5pt; background: none;
+  }
+  .nota-cb, .nota-toggle { display: none; }
+
+  /* citas y glosas: texto plano, sin subrayados de interfaz */
+  .pas { border-bottom: none; cursor: auto; }
+  .gloss-word { border-bottom: none; }
+  .gloss-pop, .pas-pop { display: none !important; }
+
+  /* enlaces externos con su URL visible */
+  article.acta a[href^="http"]::after { content: " (" attr(href) ")"; font-size: 8pt; color: var(--tinta-suave); }
+
+  /* tablas y careo: apilados, sin cortes feos */
+  article.acta table, article.acta tbody, article.acta tr, article.acta td { display: block; width: 100% !important; }
+  article.acta thead { display: none; }
+  article.acta tr { border: 1px solid var(--hairline); margin: 0 0 0.6rem; break-inside: avoid; }
+  article.acta td { border: 0; border-top: 1px solid var(--hairline); }
+  article.acta tr td:first-child { border-top: 0; background: var(--tinte); font-weight: 600; }
+  article.acta td[data-label]::before {
+    content: attr(data-label); display: block;
+    font-family: var(--caps); font-size: 6.5pt; font-weight: 600;
+    letter-spacing: 0.12em; text-transform: uppercase; color: var(--rubrica);
+  }
+  .careo-grid { display: block; }
+  .careo-col { border: 1px solid var(--hairline); margin-bottom: 0.6rem; break-inside: avoid; min-width: 0; }
+
+  h2, h3 { break-after: avoid; }
+  .acta-cabecera { break-after: avoid; }
+}
