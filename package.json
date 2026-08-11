@@ -5,10 +5,14 @@
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
-    "preview": "astro preview"
+    "preview": "astro preview",
+    "deploy": "astro build && wrangler deploy"
   },
   "dependencies": {
-    "astro": "^7.2.0",
-    "@astrojs/mdx": "*"
+    "@astrojs/mdx": "*",
+    "astro": "^7.2.0"
+  },
+  "devDependencies": {
+    "wrangler": "^4.120.1"
   }
 }
