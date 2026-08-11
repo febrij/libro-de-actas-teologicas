@@ -1,0 +1,9 @@
+---
+// Epígrafe estilo edición crítica: cita breve con su fuente, en la apertura de una acta o sección.
+// Uso: <Epigrafe fuente="Hch 17:11 · RVA 1909">Escudriñando cada día las Escrituras, si estas cosas eran así.</Epigrafe>
+const { fuente = '' } = Astro.props;
+---
+<figure class="epigrafe">
+  <blockquote><slot /></blockquote>
+  {fuente && <figcaption>{fuente}</figcaption>}
+</figure>

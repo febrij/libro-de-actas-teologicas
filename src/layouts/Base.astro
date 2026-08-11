@@ -109,6 +109,80 @@ const { titulo = 'Libro de actas', descripcion = 'Actas teológicas verificables
         }
       }
 
+      // ---------- Popovers de pasajes bíblicos (RVA 1909) ----------
+      const cacheBiblia = new Map();
+      async function libroJson(slug) {
+        if (!cacheBiblia.has(slug)) {
+          cacheBiblia.set(slug, fetch(`/biblia/${slug}.json`).then((r) => (r.ok ? r.json() : null)).catch(() => null));
+        }
+        return cacheBiblia.get(slug);
+      }
+
+      let pop = null, pasActivo = null, timerPas = null;
+      function popEl() {
+        if (!pop) {
+          pop = document.createElement('div');
+          pop.className = 'pas-pop';
+          pop.addEventListener('pointerenter', () => clearTimeout(timerPas));
+          pop.addEventListener('pointerleave', ocultarPas);
+          document.body.appendChild(pop);
+        }
+        return pop;
+      }
+      function ocultarPas() {
+        timerPas = setTimeout(() => { pop?.classList.remove('visible'); pasActivo = null; }, 180);
+      }
+      function colocar(el) {
+        const r = el.getBoundingClientRect();
+        const P = popEl();
+        P.style.left = Math.max(8, Math.min(innerWidth - P.offsetWidth - 8, r.left)) + 'px';
+        const abajo = r.bottom + 8 + P.offsetHeight < innerHeight;
+        P.style.top = (abajo ? r.bottom + 8 : Math.max(8, r.top - P.offsetHeight - 8)) + 'px';
+      }
+      async function mostrarPas(el) {
+        clearTimeout(timerPas);
+        pasActivo = el;
+        const d = el.dataset;
+        const c1 = +d.c1, v1 = +d.v1, c2 = d.c2 ? +d.c2 : c1, v2 = d.v2 ? +d.v2 : v1;
+        const etiqueta = `${d.nombre} ${c1}:${v1}` + (d.c2 ? `–${c2}:${v2}` : (v2 !== v1 ? `–${v2}` : ''));
+        const P = popEl();
+        P.innerHTML = `<h5>${etiqueta}</h5><p class="v">…</p>`;
+        P.classList.add('visible');
+        colocar(el);
+        const libro = await libroJson(d.libro);
+        if (pasActivo !== el) return;
+        let cuerpo = '', n = 0, cortado = false;
+        for (let c = c1; c <= c2 && !cortado; c++) {
+          const caps = libro?.capitulos?.[c] || {};
+          const desde = c === c1 ? v1 : 1;
+          const hasta = c === c2 ? v2 : Math.max(...Object.keys(caps).map(Number), 0);
+          for (let v = desde; v <= hasta; v++) {
+            if (!caps[v]) continue;
+            if (++n > 24) { cortado = true; break; }
+            cuerpo += `<p class="v"><sup>${c !== c1 || c2 !== c1 ? c + ':' : ''}${v}</sup>${caps[v]}</p>`;
+          }
+        }
+        if (!cuerpo) cuerpo = '<p class="v">Pasaje no disponible en esta base.</p>';
+        if (cortado) cuerpo += '<p class="v">…</p>';
+        const bg = `https://www.biblegateway.com/passage/?search=${encodeURIComponent(etiqueta)}&version=RVR1960`;
+        P.innerHTML = `<h5>${etiqueta}</h5>${cuerpo}<footer><span>RVA 1909 · dominio público</span><a href="${bg}" target="_blank" rel="noopener">Cotejar en RVR60 ↗</a></footer>`;
+        colocar(el);
+      }
+      document.addEventListener('pointerover', (e) => {
+        const el = e.target.closest?.('.pas');
+        if (el && el !== pasActivo) mostrarPas(el);
+        else if (el) clearTimeout(timerPas);
+      });
+      document.addEventListener('pointerout', (e) => {
+        if (e.target.closest?.('.pas')) ocultarPas();
+      });
+      document.addEventListener('click', (e) => {
+        const el = e.target.closest?.('.pas');
+        if (el) { e.preventDefault(); pasActivo === el && pop?.classList.contains('visible') ? (pop.classList.remove('visible'), pasActivo = null) : mostrarPas(el); }
+        else if (!e.target.closest?.('.pas-pop')) pop?.classList.remove('visible');
+      });
+      addEventListener('scroll', () => { if (pop?.classList.contains('visible') && pasActivo) colocar(pasActivo); }, { passive: true });
+
       document.addEventListener('astro:page-load', iniciar);
     </script>
   </body>

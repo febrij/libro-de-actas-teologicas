@@ -14,6 +14,11 @@ const series = (['olivo', 'cimientos'] as const).filter((s) => actas.some((a) =>
   <h1 class="portada-titulo">Libro de actas</h1>
   <p class="portada-lema">Una sola obra, tres series — cada afirmación rastreable hasta un pasaje abierto o una fuente citada con autor, obra y año.</p>
 
+  <figure class="epigrafe epigrafe-portada">
+    <blockquote>Recibieron la palabra con toda solicitud, escudriñando cada día las Escrituras, si estas cosas eran así.</blockquote>
+    <figcaption>Hechos 17:11 · RVA 1909</figcaption>
+  </figure>
+
   {series.map((s) => (
     <section class="serie-bloque">
       <p class="eyebrow serie-tag"><b>{SERIES[s].nombre}</b></p>

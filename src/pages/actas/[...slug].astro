@@ -4,6 +4,8 @@ import Nota from '../../components/Nota.astro';
 import Gloss from '../../components/Gloss.astro';
 import Careo from '../../components/Careo.astro';
 import Conf from '../../components/Conf.astro';
+import Epigrafe from '../../components/Epigrafe.astro';
+import Plegable from '../../components/Plegable.astro';
 import { getCollection, render } from 'astro:content';
 import { romano, fechaLarga, SERIES } from '../../lib/util';
 
@@ -45,6 +47,7 @@ const urlEn = `https://translate.google.com/translate?sl=es&tl=en&u=${encodeURIC
       <span>Locus · <b>{d.loci}</b></span>
       <span>Levantada el <b>{fechaLarga(d.fecha)}</b></span>
       <span>Lectura · <b>{minutos} min</b></span>
+      {d.estado && <span>Estado · <b>{d.estado}</b></span>}
       {d.pasajes.length > 0 && <span>Pasajes citados · <b>{d.pasajes.length}</b></span>}
       <span><a href={urlEn} rel="nofollow noopener">Read in English ↗</a></span>
     </div>
@@ -62,7 +65,7 @@ const urlEn = `https://translate.google.com/translate?sl=es&tl=en&u=${encodeURIC
   )}
 
   <article class="acta">
-    <Content components={{ Nota, Gloss, Careo, Conf }} />
+    <Content components={{ Nota, Gloss, Careo, Conf, Epigrafe, Plegable }} />
   </article>
 
   {(anterior || siguiente) && (

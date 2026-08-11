@@ -76,3 +76,10 @@ src/
 ```
 
 Para ajustar la paleta o la tipografía, todo vive en las variables al inicio de `src/styles/global.css`.
+
+## Aparato de lectura (v9)
+
+- **Popovers bíblicos**: toda cita "Libro C:V" se detecta en compilación y muestra el pasaje (RVA 1909, dominio público) al pasar el cursor, con enlace de cotejo a RVR60. Los textos viven en `public/biblia/*.json` — para cambiar de versión, reemplaza esos archivos conservando el formato `{nombre, capitulos: {c: {v: texto}}}`.
+- **Modos de lectura**: papel / sepia / noche (botón ◐ en la cabecera; recuerda la preferencia).
+- **Componentes**: `<Epigrafe fuente="…">cita</Epigrafe>` y `<Plegable titulo="…">contenido</Plegable>` disponibles en cualquier acta.
+- **Frontmatter**: campo opcional `estado:` (p. ej. "Vigente", "En reposo deliberado") visible en la cabecera.

@@ -10,6 +10,7 @@ const actas = defineCollection({
     orden: z.number(),            // 1, 2, 3… define el numeral romano y el orden
     loci: z.string(),             // p. ej. "Bibliología"
     fecha: z.coerce.date(),
+    estado: z.string().optional(),
     resumen: z.string(),
     pasajes: z.array(z.string()).default([]),  // alimenta el índice de pasajes
     borrador: z.boolean().default(false),      // true = no se publica

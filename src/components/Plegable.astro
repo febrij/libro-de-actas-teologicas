@@ -1,0 +1,9 @@
+---
+// Sección colapsable estilo Gwern, para aparato extenso que no debe interrumpir la lectura.
+// Uso: <Plegable titulo="Registro de verificación completo"> …contenido… </Plegable>
+const { titulo = 'Desplegar', abierto = false } = Astro.props;
+---
+<details class="plegable" open={abierto}>
+  <summary>{titulo}</summary>
+  <div class="plegable-cuerpo"><slot /></div>
+</details>

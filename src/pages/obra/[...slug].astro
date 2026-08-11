@@ -4,6 +4,8 @@ import Nota from '../../components/Nota.astro';
 import Gloss from '../../components/Gloss.astro';
 import Careo from '../../components/Careo.astro';
 import Conf from '../../components/Conf.astro';
+import Epigrafe from '../../components/Epigrafe.astro';
+import Plegable from '../../components/Plegable.astro';
 import { getCollection, render } from 'astro:content';
 import { fechaLarga } from '../../lib/util';
 
@@ -39,7 +41,7 @@ const indice = headings.filter((h) => h.depth === 2 || h.depth === 3);
   )}
 
   <article class="acta">
-    <Content components={{ Nota, Gloss, Careo, Conf }} />
+    <Content components={{ Nota, Gloss, Careo, Conf, Epigrafe, Plegable }} />
   </article>
 
   <script>

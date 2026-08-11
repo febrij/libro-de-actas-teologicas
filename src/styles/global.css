@@ -373,3 +373,66 @@ html { transition: background-color 200ms ease, color 200ms ease; }
 @media (prefers-reduced-motion: reduce) {
   ::view-transition-group(*), ::view-transition-old(*), ::view-transition-new(*) { animation: none !important; }
 }
+
+
+/* ============================================================
+   Aparato gwerniano
+   ============================================================ */
+
+/* ---------- citas bíblicas con popover ---------- */
+.pas { border-bottom: 1px dotted var(--rubrica); cursor: help; }
+.pas-pop {
+  position: fixed; z-index: 60;
+  width: min(24rem, calc(100vw - 2rem));
+  max-height: 45vh; overflow-y: auto;
+  background: var(--papel); color: var(--tinta);
+  border: 1px solid var(--hairline);
+  box-shadow: 0 6px 24px rgba(0,0,0,0.14);
+  padding: 0.85rem 1rem 0.7rem;
+  font-size: 0.875rem; line-height: 1.6;
+  display: none;
+}
+.pas-pop.visible { display: block; }
+.pas-pop h5 {
+  margin: 0 0 0.5rem;
+  font-family: var(--caps); font-size: 0.6875rem; font-weight: 700;
+  letter-spacing: 0.14em; text-transform: uppercase; color: var(--rubrica);
+}
+.pas-pop .v { margin: 0 0 0.35rem; }
+.pas-pop .v sup { color: var(--rubrica); font-family: var(--caps); font-size: 0.65rem; font-weight: 700; margin-right: 0.3rem; }
+.pas-pop footer {
+  margin-top: 0.55rem; padding-top: 0.5rem; border-top: 1px solid var(--hairline);
+  font-family: var(--caps); font-size: 0.6875rem; color: var(--tinta-suave);
+  display: flex; justify-content: space-between; gap: 0.8rem; flex-wrap: wrap;
+}
+.pas-pop footer a { color: var(--rubrica); text-decoration: none; }
+[data-tema="noche"] .pas-pop { box-shadow: 0 6px 24px rgba(0,0,0,0.6); }
+
+/* ---------- capitular rubricada ---------- */
+article.acta > p:first-of-type::first-letter {
+  float: left;
+  font-size: 3.3em; line-height: 0.82;
+  padding: 0.06em 0.09em 0 0;
+  color: var(--rubrica);
+  font-weight: 500;
+}
+
+/* ---------- epígrafe ---------- */
+.epigrafe { margin: 0 0 2.2rem; max-width: 34rem; }
+.epigrafe blockquote { margin: 0; font-style: italic; font-size: 1.02rem; color: var(--tinta-suave); border: 0; padding: 0; }
+.epigrafe figcaption { margin-top: 0.4rem; font-family: var(--caps); font-size: 0.6875rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--rubrica); }
+.epigrafe-portada { margin: -1.6rem 0 3.4rem; }
+article.acta .epigrafe { margin: 2rem 0; }
+
+/* ---------- plegable ---------- */
+.plegable { max-width: var(--col-lectura); border: 1px solid var(--hairline); margin: 1.8em 0; }
+.plegable summary {
+  cursor: pointer; padding: 0.7rem 1rem;
+  font-family: var(--caps); font-size: 0.75rem; font-weight: 600;
+  letter-spacing: 0.14em; text-transform: uppercase; color: var(--rubrica);
+  background: var(--tinte);
+}
+.plegable-cuerpo { padding: 0.4rem 1rem 0.6rem; }
+
+/* ---------- enlaces externos marcados ---------- */
+article.acta a[href^="http"]::after { content: " ↗"; font-size: 0.72em; color: var(--rubrica); }
