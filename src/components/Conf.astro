@@ -1,0 +1,9 @@
+---
+// Etiqueta de confianza como sello de rúbrica.
+// Uso: <Conf>Confianza alta</Conf> · <Conf>Media</Conf> · <Conf>Abierto por método</Conf>
+// El nivel (alta / media / abierto) se detecta del texto para variar el estilo.
+const texto = (await Astro.slots.render('default')).replace(/<[^>]+>/g, '');
+const t = texto.toLowerCase();
+const nivel = t.includes('alta') ? 'alta' : t.includes('media') ? 'media' : 'abierto';
+---
+<span class={`conf conf-${nivel}`} translate="no"><slot /></span>

@@ -9,6 +9,13 @@ const { titulo = 'Un pueblo, un pacto, una venida', descripcion = 'Actas teológ
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content={descripcion} />
     <title>{titulo}</title>
+    <link rel="canonical" href={new URL(Astro.url.pathname, Astro.site)} />
+    <meta property="og:title" content={titulo} />
+    <meta property="og:description" content={descripcion} />
+    <meta property="og:type" content="article" />
+    <meta property="og:url" content={new URL(Astro.url.pathname, Astro.site)} />
+    <meta property="og:site_name" content="Un pueblo, un pacto, una venida" />
+    <meta property="og:locale" content="es" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Literata:ital,opsz,wght@0,7..72,200..900;1,7..72,200..900&family=Archivo:wght@400;500;600;700&family=Gentium+Plus:ital@0;1&display=swap" rel="stylesheet" />
@@ -23,7 +30,7 @@ const { titulo = 'Un pueblo, un pacto, una venida', descripcion = 'Actas teológ
       </header>
       <slot />
       <footer class="sitio">
-        <span>Un pueblo, un pacto, una venida</span>
+        <span>Una serie de <em>cazador de ídolos</em></span>
         <span>Soli Deo gloria</span>
       </footer>
     </div>

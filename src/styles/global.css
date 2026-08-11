@@ -220,3 +220,70 @@ footer.sitio { margin-top: 5rem; padding-top: 1.2rem; border-top: 1px solid var(
 @media (prefers-reduced-motion: reduce) {
   * { transition: none !important; }
 }
+
+/* ---------- índice de la acta ---------- */
+.toc { max-width: var(--col-lectura); margin: 0 0 3rem; border: 1px solid var(--hairline); background: var(--tinte); padding: 0.9rem 1.2rem; }
+.toc summary { cursor: pointer; font-family: var(--caps); font-size: 0.75rem; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; color: var(--rubrica); }
+.toc ol { list-style: none; margin: 0.8rem 0 0.2rem; padding: 0; columns: 1; }
+.toc li { padding: 0.22rem 0; font-size: 0.9rem; line-height: 1.4; }
+.toc li.toc-3 { padding-left: 1.1rem; font-size: 0.84rem; color: var(--tinta-suave); }
+.toc a { text-decoration: none; }
+.toc a:hover { color: var(--rubrica); text-decoration: underline; }
+
+/* ---------- etiqueta de confianza ---------- */
+.conf {
+  display: inline-block;
+  font-family: var(--caps); font-size: 0.6875rem; font-weight: 600;
+  letter-spacing: 0.1em; text-transform: uppercase;
+  padding: 0.28rem 0.7rem; border-radius: 2px;
+  margin: 0.1rem 0 0.4rem;
+}
+.conf-alta { background: var(--rubrica); color: var(--papel); }
+.conf-media { background: transparent; color: var(--rubrica); border: 1px solid var(--rubrica); }
+.conf-abierto { background: transparent; color: var(--tinta-suave); border: 1px dashed var(--tinta-suave); }
+
+/* ---------- tablas de la acta (tablero, careo en Markdown) ---------- */
+/* En escritorio la tabla rompe la columna de lectura y usa el ancho completo
+   de la pagina, para no depender del scroll horizontal. */
+article.acta table {
+  display: block;
+  border-collapse: collapse;
+  clear: both;
+  max-width: 100%;
+  width: max-content;
+  overflow-x: auto;   /* red de seguridad si aun asi no cabe */
+  margin: 1.8em 0; font-size: 0.85rem; line-height: 1.5;
+}
+article.acta th {
+  font-family: var(--caps); font-size: 0.68rem; font-weight: 700;
+  letter-spacing: 0.12em; text-transform: uppercase; text-align: left;
+  background: var(--tinte); color: var(--tinta);
+  padding: 0.55rem 0.8rem; border: 1px solid var(--hairline);
+}
+article.acta td { padding: 0.55rem 0.8rem; border: 1px solid var(--hairline); vertical-align: top; }
+
+/* ---------- anclas de sección ---------- */
+article.acta h2, article.acta h3 { scroll-margin-top: 1.5rem; }
+.ancla {
+  margin-left: 0.45rem; text-decoration: none;
+  color: var(--hairline); font-weight: 400; font-size: 0.85em;
+}
+h2:hover .ancla, h3:hover .ancla { color: var(--rubrica); }
+
+
+/* ---------- tablas en movil: filas como fichas apiladas, sin corte ---------- */
+@media (max-width: 720px) {
+  article.acta table, article.acta tbody, article.acta tr, article.acta td { display: block; width: 100% !important; }
+  article.acta thead { display: none; }
+  article.acta table { border: 0; }
+  article.acta tr { border: 1px solid var(--hairline); margin: 0 0 1rem; }
+  article.acta td { border: 0; border-top: 1px solid var(--hairline); }
+  article.acta tr td:first-child { border-top: 0; background: var(--tinte); font-weight: 600; }
+  article.acta td[data-label]::before {
+    content: attr(data-label);
+    display: block;
+    font-family: var(--caps); font-size: 0.62rem; font-weight: 600;
+    letter-spacing: 0.13em; text-transform: uppercase;
+    color: var(--rubrica); margin-bottom: 0.2rem;
+  }
+}

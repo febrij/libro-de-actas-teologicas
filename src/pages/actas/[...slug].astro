@@ -3,6 +3,7 @@ import Base from '../../layouts/Base.astro';
 import Nota from '../../components/Nota.astro';
 import Gloss from '../../components/Gloss.astro';
 import Careo from '../../components/Careo.astro';
+import Conf from '../../components/Conf.astro';
 import { getCollection, render } from 'astro:content';
 import { romano, fechaLarga } from '../../lib/util';
 
@@ -12,8 +13,19 @@ export async function getStaticPaths() {
 }
 
 const { acta } = Astro.props;
-const { Content } = await render(acta);
+const { Content, headings } = await render(acta);
 const d = acta.data;
+
+// Tiempo de lectura (~210 palabras/min en español)
+const palabras = (acta.body ?? '').split(/\s+/).length;
+const minutos = Math.max(1, Math.round(palabras / 210));
+
+// Índice: solo encabezados de nivel 2 y 3
+const indice = headings.filter((h) => h.depth === 2 || h.depth === 3);
+
+// "Read in English" vía Google Translate (sin widget incrustado)
+const urlActa = new URL(Astro.url.pathname, Astro.site).href;
+const urlEn = `https://translate.google.com/translate?sl=es&tl=en&u=${encodeURIComponent(urlActa)}`;
 ---
 <Base titulo={`Acta ${romano(d.orden)} · ${d.titulo}`} descripcion={d.resumen}>
   <div class="acta-cabecera">
@@ -24,11 +36,50 @@ const d = acta.data;
     <div class="acta-meta">
       <span>Locus · <b>{d.loci}</b></span>
       <span>Levantada el <b>{fechaLarga(d.fecha)}</b></span>
+      <span>Lectura · <b>{minutos} min</b></span>
       {d.pasajes.length > 0 && <span>Pasajes citados · <b>{d.pasajes.length}</b></span>}
+      <span><a href={urlEn} rel="nofollow noopener">Read in English ↗</a></span>
     </div>
   </div>
 
+  {indice.length > 2 && (
+    <details class="toc">
+      <summary>Índice de la acta</summary>
+      <ol>
+        {indice.map((h) => (
+          <li class={`toc-${h.depth}`}><a href={`#${h.slug}`}>{h.text}</a></li>
+        ))}
+      </ol>
+    </details>
+  )}
+
   <article class="acta">
-    <Content components={{ Nota, Gloss, Careo }} />
+    <Content components={{ Nota, Gloss, Careo, Conf }} />
   </article>
+
+  <script>
+    // Tablas: cada celda recuerda su encabezado, para el modo ficha en movil
+    document.querySelectorAll('article.acta table').forEach((t) => {
+      const ths = [...t.querySelectorAll('thead th')].map((th) => th.textContent.trim());
+      if (!ths.length) return;
+      t.querySelectorAll('tbody tr').forEach((tr) => {
+        [...tr.children].forEach((td, i) => {
+          if (i > 0 && ths[i]) td.setAttribute('data-label', ths[i]);
+        });
+      });
+    });
+
+    // Ancla § en cada sección: clic copia el enlace directo al parágrafo
+    document.querySelectorAll('article.acta h2[id], article.acta h3[id]').forEach((h) => {
+      const a = document.createElement('a');
+      a.href = '#' + h.id;
+      a.className = 'ancla';
+      a.textContent = '§';
+      a.title = 'Enlace a esta sección';
+      a.addEventListener('click', () => {
+        navigator.clipboard?.writeText(location.origin + location.pathname + '#' + h.id);
+      });
+      h.appendChild(a);
+    });
+  </script>
 </Base>
