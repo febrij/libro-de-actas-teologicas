@@ -32,7 +32,30 @@ export default {
       return json({ ok: true });
     }
 
-    // ---- Leerlas (solo tú, con tu clave) ----
+    // ---- Comentarios aprobados de un acta (público) ----
+    if (url.pathname === '/api/comentarios' && request.method === 'GET') {
+      const acta = url.searchParams.get('acta') || '';
+      const { results } = await env.DB.prepare(
+        `SELECT fecha, nombre, seccion, cita, comentario FROM observaciones
+         WHERE estado = 'aprobada' AND acta = ?1 ORDER BY fecha ASC LIMIT 200`
+      ).bind(acta).all();
+      return new Response(JSON.stringify({ comentarios: results }), {
+        headers: { 'Content-Type': 'application/json', 'Cache-Control': 'no-store' },
+      });
+    }
+
+    // ---- Moderar (solo tú) ----
+    if (url.pathname === '/api/moderar' && request.method === 'POST') {
+      const f = await request.formData();
+      if (!env.CLAVE || f.get('clave') !== env.CLAVE) return new Response('No encontrado', { status: 404 });
+      const estado = String(f.get('estado'));
+      if (!['aprobada', 'oculta', 'nueva'].includes(estado)) return json({ error: 'estado' }, 400);
+      await env.DB.prepare('UPDATE observaciones SET estado = ?1 WHERE id = ?2')
+        .bind(estado, String(f.get('id'))).run();
+      return new Response(null, { status: 303, headers: { Location: '/api/observaciones?clave=' + encodeURIComponent(env.CLAVE) } });
+    }
+
+    // ---- Leerlas y moderarlas (solo tú, con tu clave) ----
     if (url.pathname === '/api/observaciones' && request.method === 'GET') {
       if (!env.CLAVE || url.searchParams.get('clave') !== env.CLAVE) return env.ASSETS.fetch(request);
       const { results } = await env.DB.prepare('SELECT * FROM observaciones ORDER BY fecha DESC LIMIT 500').all();
@@ -42,7 +65,12 @@ export default {
           <p style="margin:0;font-size:.8rem;color:#666">${esc(r.fecha)} · <b>${esc(r.acta)}</b> ${r.seccion ? '· §' + esc(r.seccion) : ''} · estado: ${esc(r.estado)}</p>
           ${r.cita ? `<blockquote style="margin:.6rem 0;padding-left:.8rem;border-left:3px solid #9c2b23;color:#555">${esc(r.cita)}</blockquote>` : ''}
           <p style="margin:.4rem 0">${esc(r.comentario)}</p>
-          <p style="margin:0;font-size:.8rem;color:#666">${esc(r.nombre) || 'Anónimo'}${r.contacto ? ' · ' + esc(r.contacto) : ''} ${r.url ? `· <a href="${esc(r.url)}">ver en el sitio</a>` : ''}</p>
+          <p style="margin:0 0 .5rem;font-size:.8rem;color:#666">${esc(r.nombre) || 'Anónimo'}${r.contacto ? ' · ' + esc(r.contacto) : ''} ${r.url ? `· <a href="${esc(r.url)}">ver en el sitio</a>` : ''}</p>
+          <form method="post" action="/api/moderar" style="display:flex;gap:.4rem">
+            <input type="hidden" name="id" value="${esc(r.id)}"><input type="hidden" name="clave" value="${esc(env.CLAVE)}">
+            <button name="estado" value="aprobada" style="background:#2e6b2e;color:#fff;border:0;padding:.35rem .8rem;cursor:pointer">Aprobar</button>
+            <button name="estado" value="oculta" style="background:#888;color:#fff;border:0;padding:.35rem .8rem;cursor:pointer">Ocultar</button>
+          </form>
         </article>`).join('');
       return new Response(
         `<!doctype html><html lang="es"><meta charset="utf-8"><meta name="robots" content="noindex">

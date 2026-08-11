@@ -256,7 +256,7 @@ const imagenAbs = new URL(imagen, Astro.site).href;
           obsDlg.innerHTML = `
             <h5>Observación al margen <button type="button" class="obs-x" aria-label="Cerrar">×</button></h5>
             <blockquote class="obs-cita"></blockquote>
-            <textarea class="obs-texto" rows="4" maxlength="4000" placeholder="Corrección de dato, texto o atribución; o tu observación. Llega en privado al autor."></textarea>
+            <textarea class="obs-texto" rows="4" maxlength="4000" placeholder="Tu observación sobre el fragmento señalado. Se publica al pie del acta después de moderación."></textarea>
             <input class="obs-nombre" type="text" maxlength="120" placeholder="Nombre (opcional)">
             <input class="obs-contacto" type="text" maxlength="200" placeholder="Correo o contacto (opcional, por si hay que responderte)">
             <input class="obs-web" type="text" tabindex="-1" autocomplete="off" aria-hidden="true">
@@ -265,7 +265,9 @@ const imagenAbs = new URL(imagen, Astro.site).href;
           obsDlg.querySelector('.obs-x').addEventListener('click', () => obsDlg.classList.remove('visible'));
           obsDlg.querySelector('.obs-enviar').addEventListener('click', enviarObs);
         }
-        obsDlg.querySelector('.obs-cita').textContent = '“' + obsDatos.cita.slice(0, 220) + (obsDatos.cita.length > 220 ? '…' : '') + '”';
+        const bq = obsDlg.querySelector('.obs-cita');
+        bq.style.display = obsDatos.cita ? '' : 'none';
+        bq.textContent = obsDatos.cita ? '“' + obsDatos.cita.slice(0, 220) + (obsDatos.cita.length > 220 ? '…' : '') + '”' : '';
         obsDlg.querySelector('.obs-aviso').textContent = '';
         obsDlg.classList.add('visible');
         obsDlg.querySelector('.obs-texto').focus();
@@ -288,11 +290,16 @@ const imagenAbs = new URL(imagen, Astro.site).href;
           obsDlg.querySelector('.obs-texto').value = '';
           obsDlg.classList.remove('visible');
           const ok = document.createElement('div');
-          ok.className = 'obs-ok'; ok.textContent = 'Recibida. Entra al registro para adjudicación — gracias, bereano.';
+          ok.className = 'obs-ok'; ok.textContent = 'Recibida — se publicará al pie del acta tras moderación. Gracias, bereano.';
           document.body.appendChild(ok);
           setTimeout(() => ok.remove(), 3500);
         } catch { aviso.textContent = 'No se pudo enviar. Intenta de nuevo.'; }
       }
+
+      window.abrirObsGeneral = (acta) => {
+        obsDatos = { cita: '', seccion: '', acta, url: location.origin + acta };
+        abrirObs();
+      };
 
       document.addEventListener('astro:page-load', iniciar);
     </script>

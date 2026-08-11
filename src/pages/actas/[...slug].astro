@@ -78,7 +78,13 @@ const urlEn = `https://translate.google.com/translate?sl=es&tl=en&u=${encodeURIC
     <Content components={{ Nota, Gloss, Careo, Conf, Epigrafe, Plegable }} />
   </article>
 
-  <p class="obs-pista">¿Un dato que corregir, un texto mal citado? Selecciona el pasaje y deja tu observación — llega en privado al autor. Ese es el método.</p>
+  <p class="obs-pista">¿Un dato que corregir, una observación? Selecciona el pasaje y coméntalo — se publica aquí abajo tras moderación. Ese es el método: el lector no interrumpe, completa.</p>
+
+  <section class="coms" data-acta={`/actas/${acta.id}`} hidden>
+    <p class="eyebrow coms-titulo"><b>Observaciones de lectores</b> · <span class="coms-n"></span> · moderadas</p>
+    <div class="coms-lista"></div>
+    <button type="button" class="ber-btn coms-nueva">✎ Dejar una observación general</button>
+  </section>
 
   {citadaEn.length > 0 && (
     <nav class="citada">
@@ -130,6 +136,40 @@ const urlEn = `https://translate.google.com/translate?sl=es&tl=en&u=${encodeURIC
       if (!h.querySelector('.ancla')) h.appendChild(a);
     });
     }
-    document.addEventListener('astro:page-load', prepararActa);
+    // Observaciones aprobadas, al pie
+    async function cargarComs() {
+      const sec = document.querySelector('.coms');
+      if (!sec || sec.dataset.cargada) return;
+      sec.dataset.cargada = '1';
+      sec.querySelector('.coms-nueva').addEventListener('click', () => {
+        window.abrirObsGeneral?.(sec.dataset.acta);
+      });
+      try {
+        const r = await fetch('/api/comentarios?acta=' + encodeURIComponent(sec.dataset.acta));
+        const { comentarios } = await r.json();
+        sec.hidden = false;
+        sec.querySelector('.coms-n').textContent = comentarios.length;
+        const lista = sec.querySelector('.coms-lista');
+        for (const c of comentarios) {
+          const el = document.createElement('article');
+          el.className = 'com';
+          if (c.cita) {
+            const q = document.createElement('blockquote');
+            if (c.seccion) {
+              const a = document.createElement('a');
+              a.href = '#' + c.seccion; a.textContent = c.cita;
+              q.appendChild(a);
+            } else q.textContent = c.cita;
+            el.appendChild(q);
+          }
+          const t = document.createElement('p'); t.textContent = c.comentario; el.appendChild(t);
+          const m = document.createElement('p'); m.className = 'com-meta';
+          m.textContent = (c.nombre || 'Anónimo') + ' · ' + new Date(c.fecha).toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric' });
+          el.appendChild(m);
+          lista.appendChild(el);
+        }
+      } catch { /* sin red o sin API: la sección queda oculta */ }
+    }
+    document.addEventListener('astro:page-load', () => { prepararActa(); cargarComs(); });
   </script>
 </Base>
