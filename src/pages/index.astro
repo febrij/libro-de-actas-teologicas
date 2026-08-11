@@ -7,7 +7,7 @@ const actas = (await getCollection('actas', ({ data }) => !data.borrador))
   .sort((a, b) => a.data.orden - b.data.orden);
 const documentos = (await getCollection('documentos'))
   .sort((a, b) => a.data.orden - b.data.orden);
-const series = (['olivo', 'cimientos'] as const).filter((s) => actas.some((a) => a.data.serie === s));
+const series = (['olivo', 'cimientos', 'auditorias'] as const).filter((s) => actas.some((a) => a.data.serie === s));
 ---
 <Base>
   <p class="eyebrow"><b>cazador de ídolos</b> · actas verificables</p>

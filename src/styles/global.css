@@ -57,7 +57,7 @@ header.sitio {
   border-bottom: 1px solid var(--hairline);
   margin-bottom: 3.5rem;
 }
-header.sitio nav { font-family: var(--caps); font-size: 0.8125rem; display: flex; gap: 1.4rem; }
+header.sitio nav { font-family: var(--caps); font-size: 0.8125rem; display: flex; gap: 0.9rem 1.4rem; flex-wrap: wrap; justify-content: flex-end; align-items: center; }
 header.sitio nav a { text-decoration: none; color: var(--tinta-suave); }
 header.sitio nav a:hover { color: var(--rubrica); }
 .marca { font-family: var(--caps); font-weight: 700; font-size: 0.8125rem; letter-spacing: 0.14em; text-transform: uppercase; text-decoration: none; }
@@ -536,3 +536,23 @@ a:focus-visible, button:focus-visible, summary:focus-visible, .pas:focus-visible
   outline: 2px solid var(--rubrica);
   outline-offset: 2px;
 }
+
+
+/* ---------- práctica bereana ---------- */
+.ber-carta { max-width: var(--col-lectura); border: 1px solid var(--hairline); padding: 2rem 1.6rem 1.2rem; margin-top: 0.5rem; }
+.ber-donde { margin: 0; font-family: var(--caps); font-size: 0.6875rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--tinta-suave); }
+.ber-ref { margin: 0.4rem 0 1.2rem; font-size: clamp(1.7rem, 5vw, 2.4rem); font-weight: 600; color: var(--rubrica); }
+.ber-texto { border-top: 1px solid var(--hairline); padding-top: 1rem; margin-bottom: 1rem; }
+.ber-texto .v { margin: 0 0 0.45rem; }
+.ber-texto .v sup { color: var(--rubrica); font-family: var(--caps); font-size: 0.68rem; font-weight: 700; margin-right: 0.35rem; }
+.ber-acciones { display: flex; flex-wrap: wrap; gap: 0.5rem; margin: 0.4rem 0 1rem; }
+.ber-btn {
+  font-family: var(--caps); font-size: 0.78rem; font-weight: 600; letter-spacing: 0.04em;
+  background: transparent; color: var(--tinta); cursor: pointer;
+  border: 1px solid var(--hairline); border-radius: 999px; padding: 0.45rem 1rem;
+}
+.ber-btn:hover { border-color: var(--rubrica); color: var(--rubrica); }
+.ber-sig { background: var(--rubrica); border-color: var(--rubrica); color: var(--papel); }
+.ber-sig:hover { color: var(--papel); opacity: 0.92; }
+.ber-pie { font-family: var(--caps); font-size: 0.72rem; color: var(--tinta-suave); border-top: 1px solid var(--hairline); padding-top: 0.7rem; margin: 0; }
+.ber-pie a { color: var(--rubrica); text-decoration: none; }

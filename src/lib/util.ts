@@ -28,5 +28,10 @@ export const SERIES = {
     corto: 'Cimientos',
     lema: 'Los loci de la sistemática en modo bíblico directo: la auditoría de las premisas sobre las que la serie del olivo se construyó.',
   },
+  auditorias: {
+    nombre: 'Auditorías soteriológicas',
+    corto: 'Auditoría',
+    lema: 'La ejecución por entregas del sexto cimiento, con el rigor máximo del método: falsadores declarados antes de tocar el texto.',
+  },
 } as const;
 export type SerieId = keyof typeof SERIES;

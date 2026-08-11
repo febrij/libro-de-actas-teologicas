@@ -4,7 +4,7 @@ import { glob } from 'astro/loaders';
 const actas = defineCollection({
   loader: glob({ pattern: '**/*.mdx', base: './src/content/actas' }),
   schema: z.object({
-    serie: z.enum(['olivo', 'cimientos']).default('olivo'),
+    serie: z.enum(['olivo', 'cimientos', 'auditorias']).default('olivo'),
     titulo: z.string(),
     subtitulo: z.string().optional(),
     orden: z.number(),            // 1, 2, 3… define el numeral romano y el orden
