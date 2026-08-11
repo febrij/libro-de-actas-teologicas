@@ -436,3 +436,13 @@ article.acta .epigrafe { margin: 2rem 0; }
 
 /* ---------- enlaces externos marcados ---------- */
 article.acta a[href^="http"]::after { content: " ↗"; font-size: 0.72em; color: var(--rubrica); }
+
+.pas-pop h5 { display: flex; justify-content: space-between; align-items: center; gap: 0.6rem; }
+.ver-btns { display: inline-flex; gap: 0.25rem; }
+.ver-btn {
+  font-family: var(--caps); font-size: 0.6rem; font-weight: 600; letter-spacing: 0.08em;
+  background: transparent; color: var(--tinta-suave);
+  border: 1px solid var(--hairline); border-radius: 999px;
+  padding: 0.14rem 0.5rem; cursor: pointer;
+}
+.ver-btn.activa { background: var(--rubrica); border-color: var(--rubrica); color: var(--papel); }

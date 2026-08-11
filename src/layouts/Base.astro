@@ -111,11 +111,15 @@ const { titulo = 'Libro de actas', descripcion = 'Actas teológicas verificables
 
       // ---------- Popovers de pasajes bíblicos (RVA 1909) ----------
       const cacheBiblia = new Map();
+      const VERSIONES = { rva: 'RVA 1909 · dominio público', kjv: 'KJV · dominio público' };
+      let versionPas = localStorage.getItem('biblia-version') || 'rva';
       async function libroJson(slug) {
-        if (!cacheBiblia.has(slug)) {
-          cacheBiblia.set(slug, fetch(`/biblia/${slug}.json`).then((r) => (r.ok ? r.json() : null)).catch(() => null));
+        const clave = versionPas + '/' + slug;
+        if (!cacheBiblia.has(clave)) {
+          const ruta = versionPas === 'kjv' ? `/biblia/kjv/${slug}.json` : `/biblia/${slug}.json`;
+          cacheBiblia.set(clave, fetch(ruta).then((r) => (r.ok ? r.json() : null)).catch(() => null));
         }
-        return cacheBiblia.get(slug);
+        return cacheBiblia.get(clave);
       }
 
       let pop = null, pasActivo = null, timerPas = null;
@@ -165,7 +169,15 @@ const { titulo = 'Libro de actas', descripcion = 'Actas teológicas verificables
         if (!cuerpo) cuerpo = '<p class="v">Pasaje no disponible en esta base.</p>';
         if (cortado) cuerpo += '<p class="v">…</p>';
         const bg = `https://www.biblegateway.com/passage/?search=${encodeURIComponent(etiqueta)}&version=RVR1960`;
-        P.innerHTML = `<h5>${etiqueta}</h5>${cuerpo}<footer><span>RVA 1909 · dominio público</span><a href="${bg}" target="_blank" rel="noopener">Cotejar en RVR60 ↗</a></footer>`;
+        const botones = Object.keys(VERSIONES).map((v) =>
+          `<button type="button" class="ver-btn${v === versionPas ? ' activa' : ''}" data-ver="${v}">${v === 'rva' ? '1909' : 'KJV'}</button>`).join('');
+        P.innerHTML = `<h5>${etiqueta}<span class="ver-btns">${botones}</span></h5>${cuerpo}<footer><span>${VERSIONES[versionPas]}</span><a href="${bg}" target="_blank" rel="noopener">Cotejar en RVR60 ↗</a></footer>`;
+        P.querySelectorAll('.ver-btn').forEach((b) => b.addEventListener('click', (ev) => {
+          ev.stopPropagation();
+          versionPas = b.dataset.ver;
+          localStorage.setItem('biblia-version', versionPas);
+          if (pasActivo) mostrarPas(pasActivo);
+        }));
         colocar(el);
       }
       document.addEventListener('pointerover', (e) => {
