@@ -16,6 +16,13 @@ const { acta } = Astro.props;
 const { Content, headings } = await render(acta);
 const d = acta.data;
 
+// Acta anterior y siguiente, por orden
+const todas = (await getCollection('actas', ({ data }) => !data.borrador))
+  .sort((a, b) => a.data.orden - b.data.orden);
+const i = todas.findIndex((a) => a.id === acta.id);
+const anterior = i > 0 ? todas[i - 1] : null;
+const siguiente = i < todas.length - 1 ? todas[i + 1] : null;
+
 // Tiempo de lectura (~210 palabras/min en español)
 const palabras = (acta.body ?? '').split(/\s+/).length;
 const minutos = Math.max(1, Math.round(palabras / 210));
@@ -56,6 +63,23 @@ const urlEn = `https://translate.google.com/translate?sl=es&tl=en&u=${encodeURIC
   <article class="acta">
     <Content components={{ Nota, Gloss, Careo, Conf }} />
   </article>
+
+  {(anterior || siguiente) && (
+    <nav class="acta-nav">
+      {anterior && (
+        <a href={`/actas/${anterior.id}`}>
+          <span class="dir">← Acta {romano(anterior.data.orden)}</span>
+          <span class="cual">{anterior.data.titulo}</span>
+        </a>
+      )}
+      {siguiente && (
+        <a class="sig" href={`/actas/${siguiente.id}`}>
+          <span class="dir">Acta {romano(siguiente.data.orden)} →</span>
+          <span class="cual">{siguiente.data.titulo}</span>
+        </a>
+      )}
+    </nav>
+  )}
 
   <script>
     // Tablas: cada celda recuerda su encabezado, para el modo ficha en movil
