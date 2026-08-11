@@ -1,0 +1,46 @@
+---
+titulo: "Acta de demostración: así se ve una acta en este sitio"
+subtitulo: "Contenido de ejemplo — reemplázalo con tu Acta I real"
+orden: 1
+loci: "Bibliología"
+fecha: 2026-08-11
+resumen: "Acta de muestra que exhibe los tres componentes del sitio: notas al margen, glosas de lenguas originales y tablas careo. Bórrala o sobrescríbela con tu contenido."
+pasajes:
+  - "2 Timoteo 3:16"
+  - "2 Pedro 1:21"
+  - "Salmo 19:7"
+---
+
+Esta acta existe solo para que veas los componentes funcionando. El texto es de relleno; la estructura es la que importa. Escribe tus actas reales en archivos `.mdx` dentro de `src/content/actas/` con este mismo frontmatter.
+
+## Notas al margen
+
+Cualquier apunte crítico, referencia bibliográfica o matiz que interrumpiría el argumento va en una nota al margen<Nota>En pantalla ancha, esta nota vive aquí, al costado, estilo Tufte. En móvil, se abre tocando el número rojo.</Nota> y el lector decide si la consulta. Se pueden encadenar varias<Nota>La numeración es automática: agrega o quita notas y el conteo se ajusta solo.</Nota> sin tocar la numeración a mano.
+
+## Glosas de lenguas originales
+
+Cuando el argumento pasa por el texto original, la palabra se glosa en línea: la Escritura es <Gloss palabra="θεόπνευστος" translit="theópneustos" es="exhalada por Dios" ref="2 Ti 3:16" lang="grc" />, y la ley de YHWH es <Gloss palabra="תְּמִימָה" translit="temimá" es="perfecta, íntegra" ref="Sal 19:8 TM" lang="he" />. Pasa el cursor (o toca) sobre la palabra para ver transliteración, glosa y referencia — sin sacar al lector del párrafo.
+
+## Tablas careo
+
+Las posturas se carean lado a lado; el lector puede ocultar columnas para comparar de a dos:
+
+<Careo
+  titulo="Careo · Ejemplo de estructura"
+  criterios={["Tesis", "Texto apelado", "Observación"]}
+  posturas={[
+    { nombre: "Postura A", celdas: ["Resumen breve de la tesis A.", "Referencia bíblica principal.", "Punto fuerte o débil a evaluar."] },
+    { nombre: "Postura B", celdas: ["Resumen breve de la tesis B.", "Referencia bíblica principal.", "Punto fuerte o débil a evaluar."] },
+    { nombre: "Postura C", celdas: ["Resumen breve de la tesis C.", "Referencia bíblica principal.", "Punto fuerte o débil a evaluar."] },
+  ]}
+/>
+
+## Índice de pasajes
+
+Los pasajes declarados en el frontmatter de cada acta (`pasajes:`) alimentan el [índice global](/indice-pasajes), ordenado canónicamente. Con cada acta nueva, el índice crece solo.
+
+---
+
+> Las citas en bloque se marcan con `>` y llevan la rúbrica al costado — útiles para confesiones, fuentes patrísticas o el texto bíblico extendido.
+
+Eso es todo el aparato. Lo demás es Markdown normal: **negritas**, *cursivas*, títulos con `##`, y separadores con `---`.

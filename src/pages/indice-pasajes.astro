@@ -1,0 +1,53 @@
+---
+import Base from '../layouts/Base.astro';
+import { getCollection } from 'astro:content';
+import { romano, CANON, separaCita } from '../lib/util';
+
+const actas = (await getCollection('actas', ({ data }) => !data.borrador))
+  .sort((a, b) => a.data.orden - b.data.orden);
+
+// Agrupa todas las citas del frontmatter `pasajes` por libro, en orden canónico
+type Fila = { ref: string; actas: { id: string; num: string }[] };
+const porLibro = new Map<string, Map<string, Fila>>();
+
+for (const acta of actas) {
+  for (const cita of acta.data.pasajes) {
+    const { libro, ref } = separaCita(cita);
+    if (!porLibro.has(libro)) porLibro.set(libro, new Map());
+    const filas = porLibro.get(libro)!;
+    if (!filas.has(ref)) filas.set(ref, { ref, actas: [] });
+    filas.get(ref)!.actas.push({ id: acta.id, num: romano(acta.data.orden) });
+  }
+}
+
+const libros = [...porLibro.keys()].sort((a, b) => {
+  const ia = CANON.indexOf(a), ib = CANON.indexOf(b);
+  return (ia === -1 ? 999 : ia) - (ib === -1 ? 999 : ib);
+});
+---
+<Base titulo="Índice de pasajes citados">
+  <p class="eyebrow"><b>Aparato</b> · generado automáticamente desde las actas</p>
+  <h1 class="portada-titulo">Índice de pasajes</h1>
+  <p class="portada-lema">Todo pasaje declarado en una acta queda registrado aquí, en orden canónico.</p>
+
+  {libros.map((libro) => (
+    <section class="libro-bloque">
+      <h2>{libro}</h2>
+      <ul>
+        {[...porLibro.get(libro)!.values()].map((fila) => (
+          <li>
+            <span class="cita">{libro} {fila.ref}</span>
+            <span class="donde">
+              {fila.actas.map((a, i) => (
+                <>
+                  {i > 0 && ' · '}
+                  <a href={`/actas/${a.id}`}>Acta {a.num}</a>
+                </>
+              ))}
+            </span>
+          </li>
+        ))}
+      </ul>
+    </section>
+  ))}
+</Base>

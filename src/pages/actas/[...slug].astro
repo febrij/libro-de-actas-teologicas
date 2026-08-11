@@ -1,0 +1,34 @@
+---
+import Base from '../../layouts/Base.astro';
+import Nota from '../../components/Nota.astro';
+import Gloss from '../../components/Gloss.astro';
+import Careo from '../../components/Careo.astro';
+import { getCollection, render } from 'astro:content';
+import { romano, fechaLarga } from '../../lib/util';
+
+export async function getStaticPaths() {
+  const actas = await getCollection('actas', ({ data }) => !data.borrador);
+  return actas.map((acta) => ({ params: { slug: acta.id }, props: { acta } }));
+}
+
+const { acta } = Astro.props;
+const { Content } = await render(acta);
+const d = acta.data;
+---
+<Base titulo={`Acta ${romano(d.orden)} · ${d.titulo}`} descripcion={d.resumen}>
+  <div class="acta-cabecera">
+    <p class="eyebrow">Un pueblo, un pacto, una venida</p>
+    <div class="numeral"><small>Acta</small>{romano(d.orden)}</div>
+    <h1>{d.titulo}</h1>
+    {d.subtitulo && <p class="sub">{d.subtitulo}</p>}
+    <div class="acta-meta">
+      <span>Locus · <b>{d.loci}</b></span>
+      <span>Levantada el <b>{fechaLarga(d.fecha)}</b></span>
+      {d.pasajes.length > 0 && <span>Pasajes citados · <b>{d.pasajes.length}</b></span>}
+    </div>
+  </div>
+
+  <article class="acta">
+    <Content components={{ Nota, Gloss, Careo }} />
+  </article>
+</Base>

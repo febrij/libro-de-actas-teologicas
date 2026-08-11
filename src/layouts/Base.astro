@@ -1,0 +1,31 @@
+---
+import '../styles/global.css';
+const { titulo = 'Un pueblo, un pacto, una venida', descripcion = 'Actas teológicas' } = Astro.props;
+---
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content={descripcion} />
+    <title>{titulo}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Literata:ital,opsz,wght@0,7..72,200..900;1,7..72,200..900&family=Archivo:wght@400;500;600;700&family=Gentium+Plus:ital@0;1&display=swap" rel="stylesheet" />
+  </head>
+  <body>
+    <div class="marco">
+      <header class="sitio">
+        <a class="marca" href="/">Libro de actas</a>
+        <nav>
+          <a href="/indice-pasajes">Índice de pasajes</a>
+        </nav>
+      </header>
+      <slot />
+      <footer class="sitio">
+        <span>Un pueblo, un pacto, una venida</span>
+        <span>Soli Deo gloria</span>
+      </footer>
+    </div>
+  </body>
+</html>

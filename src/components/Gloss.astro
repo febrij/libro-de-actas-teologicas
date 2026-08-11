@@ -1,0 +1,8 @@
+---
+// Glosa de lengua original con popover al pasar el cursor (o al enfocar/tocar).
+// Uso:  <Gloss palabra="θεόπνευστος" translit="theópneustos" es="exhalada por Dios" ref="2 Ti 3:16" lang="grc" />
+// lang: "grc" (griego) | "he" (hebreo, se muestra RTL)
+const { palabra, translit, es, ref = '', lang = 'grc' } = Astro.props;
+const dir = lang === 'he' ? 'rtl' : 'ltr';
+---
+<span class="gloss" tabindex="0"><span class="gloss-word" lang={lang} dir={dir}>{palabra}</span><span class="gloss-pop" role="tooltip"><i>{translit}</i> — {es}{ref && <small>{ref}</small>}</span></span>

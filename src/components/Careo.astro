@@ -1,0 +1,51 @@
+---
+// Tabla careo interactiva: compara posturas por criterios, con chips para mostrar/ocultar columnas.
+// Uso en MDX:
+// <Careo
+//   titulo="Careo · Naturaleza de la inspiración"
+//   criterios={["Tesis", "Texto apelado", "Punto débil"]}
+//   posturas={[
+//     { nombre: "Postura A", celdas: ["…", "…", "…"] },
+//     { nombre: "Postura B", celdas: ["…", "…", "…"] },
+//   ]}
+// />
+interface Postura { nombre: string; celdas: string[] }
+const { titulo = 'Careo', criterios = [], posturas = [] } = Astro.props as {
+  titulo?: string; criterios: string[]; posturas: Postura[];
+};
+---
+<div class="careo" data-careo>
+  <div class="careo-titulo">{titulo}</div>
+  <div class="careo-chips" role="group" aria-label="Mostrar u ocultar posturas">
+    {posturas.map((p, i) => (
+      <button type="button" aria-pressed="true" data-col={i}>{p.nombre}</button>
+    ))}
+  </div>
+  <div class="careo-grid" style={`grid-template-columns: repeat(${posturas.length}, minmax(13rem, 1fr));`}>
+    {posturas.map((p, i) => (
+      <div class="careo-col" data-col={i}>
+        <h4>{p.nombre}</h4>
+        {criterios.map((c, j) => (
+          <div class="careo-celda"><b>{c}</b>{p.celdas[j] ?? '—'}</div>
+        ))}
+      </div>
+    ))}
+  </div>
+</div>
+
+<script>
+  document.querySelectorAll('[data-careo]').forEach((careo) => {
+    const grid = careo.querySelector('.careo-grid') as HTMLElement;
+    const cols = careo.querySelectorAll('.careo-col');
+    careo.querySelectorAll('.careo-chips button').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const on = btn.getAttribute('aria-pressed') === 'true';
+        btn.setAttribute('aria-pressed', String(!on));
+        const i = btn.getAttribute('data-col');
+        careo.querySelector(`.careo-col[data-col="${i}"]`)?.classList.toggle('oculta', on);
+        const visibles = careo.querySelectorAll('.careo-col:not(.oculta)').length || 1;
+        grid.style.gridTemplateColumns = `repeat(${visibles}, minmax(13rem, 1fr))`;
+      });
+    });
+  });
+</script>

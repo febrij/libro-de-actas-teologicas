@@ -1,0 +1,7 @@
+---
+// Nota al margen estilo Tufte.
+// Uso en MDX:  texto<Nota>Contenido de la nota, con *cursivas* si quieres.</Nota> sigue el texto…
+// En pantallas anchas flota en el margen derecho; en móvil se abre tocando el numerito.
+const id = 'nota-' + Math.random().toString(36).slice(2, 8);
+---
+<label for={id} class="nota-num" aria-label="Mostrar nota"></label><input type="checkbox" id={id} class="nota-cb" /><span class="nota"><slot /></span>

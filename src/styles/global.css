@@ -1,0 +1,222 @@
+/* ============================================================
+   Tokens — edición crítica sobre papel, rúbrica en rojo
+   ============================================================ */
+:root {
+  --papel: #fbfaf6;
+  --tinta: #211d18;
+  --tinta-suave: #6b6459;
+  --rubrica: #9c2b23;        /* rojo de rúbrica manuscrita: numerales, glosas, enlaces */
+  --hairline: #e5e0d4;
+  --tinte: #f2eee3;
+
+  --serif: "Literata", Georgia, serif;
+  --caps: "Archivo", system-ui, sans-serif;
+  --biblica: "Gentium Plus", "Literata", serif;  /* hebreo y griego */
+
+  --col-lectura: 41rem;
+  --col-nota: 15.5rem;
+}
+
+* { box-sizing: border-box; }
+
+html { background: var(--papel); color: var(--tinta); }
+
+body {
+  margin: 0;
+  font-family: var(--serif);
+  font-size: 1.0625rem;
+  line-height: 1.72;
+  font-optical-sizing: auto;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ---------- utilería tipográfica ---------- */
+.eyebrow {
+  font-family: var(--caps);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--tinta-suave);
+}
+.eyebrow b { color: var(--rubrica); font-weight: 600; }
+
+a { color: inherit; text-decoration-color: color-mix(in srgb, var(--rubrica) 55%, transparent); text-underline-offset: 3px; }
+a:hover { color: var(--rubrica); }
+
+/* ---------- estructura de página ---------- */
+.marco {
+  max-width: calc(var(--col-lectura) + var(--col-nota) + 6rem);
+  margin: 0 auto;
+  padding: 0 1.25rem 6rem;
+}
+
+header.sitio {
+  display: flex; justify-content: space-between; align-items: baseline; gap: 1rem;
+  padding: 1.4rem 0 1.1rem;
+  border-bottom: 1px solid var(--hairline);
+  margin-bottom: 3.5rem;
+}
+header.sitio nav { font-family: var(--caps); font-size: 0.8125rem; display: flex; gap: 1.4rem; }
+header.sitio nav a { text-decoration: none; color: var(--tinta-suave); }
+header.sitio nav a:hover { color: var(--rubrica); }
+.marca { font-family: var(--caps); font-weight: 700; font-size: 0.8125rem; letter-spacing: 0.14em; text-transform: uppercase; text-decoration: none; }
+
+/* ---------- cabecera de acta (la firma del sitio) ---------- */
+.acta-cabecera { margin-bottom: 3.2rem; }
+.acta-cabecera .numeral {
+  font-family: var(--serif);
+  font-weight: 300;
+  font-size: clamp(4.2rem, 10vw, 6.5rem);
+  line-height: 1;
+  color: var(--rubrica);
+  letter-spacing: 0.04em;
+  margin: 0.9rem 0 0.4rem;
+}
+.acta-cabecera .numeral small {
+  display: block;
+  font-family: var(--caps); font-size: 0.6875rem; font-weight: 600;
+  letter-spacing: 0.3em; text-transform: uppercase; color: var(--tinta);
+  margin-bottom: 0.5rem;
+}
+.acta-cabecera h1 {
+  font-size: clamp(1.7rem, 4vw, 2.35rem);
+  font-weight: 600; line-height: 1.22;
+  max-width: var(--col-lectura);
+  margin: 0.2rem 0 0.6rem;
+}
+.acta-cabecera .sub { font-style: italic; color: var(--tinta-suave); font-size: 1.15rem; max-width: var(--col-lectura); margin: 0; }
+.acta-meta {
+  display: flex; flex-wrap: wrap; gap: 0.4rem 1.6rem;
+  margin-top: 1.5rem; padding-top: 0.9rem;
+  border-top: 1px solid var(--hairline);
+  font-family: var(--caps); font-size: 0.75rem; letter-spacing: 0.06em; color: var(--tinta-suave);
+}
+.acta-meta b { color: var(--tinta); font-weight: 600; }
+
+/* ---------- cuerpo de lectura ---------- */
+article.acta { counter-reset: nota; }
+article.acta > * { max-width: var(--col-lectura); }
+article.acta h2 { font-size: 1.45rem; font-weight: 600; margin: 2.6em 0 0.7em; }
+article.acta h3 { font-size: 1.12rem; font-weight: 600; margin: 2.2em 0 0.5em; }
+article.acta h2 + p, article.acta h3 + p { margin-top: 0; }
+article.acta blockquote {
+  margin: 1.6em 0; padding: 0.1em 0 0.1em 1.3em;
+  border-left: 2px solid var(--rubrica);
+  font-style: italic; color: color-mix(in srgb, var(--tinta) 88%, var(--rubrica));
+}
+article.acta hr { border: 0; border-top: 1px solid var(--hairline); margin: 3em 0; }
+article.acta strong { font-weight: 600; }
+
+/* ---------- notas al margen (estilo Tufte) ---------- */
+.nota-num { counter-increment: nota; cursor: pointer; }
+.nota-num::after {
+  content: counter(nota);
+  font-family: var(--caps); font-size: 0.68em; font-weight: 700;
+  color: var(--rubrica);
+  vertical-align: super; line-height: 0;
+  padding-left: 0.12em;
+}
+.nota-cb { display: none; }
+.nota {
+  float: right; clear: right;
+  width: var(--col-nota);
+  margin-right: calc(-1 * var(--col-nota) - 3rem);
+  margin-top: 0.25rem; margin-bottom: 0.9rem;
+  font-size: 0.8125rem; line-height: 1.55;
+  color: var(--tinta-suave);
+}
+.nota::before {
+  content: counter(nota) " ";
+  font-family: var(--caps); font-weight: 700; font-size: 0.7rem;
+  color: var(--rubrica);
+}
+
+/* ---------- glosa de lengua original ---------- */
+.gloss { position: relative; }
+.gloss-word {
+  font-family: var(--biblica);
+  font-size: 1.06em;
+  cursor: help;
+  border-bottom: 1px dotted var(--rubrica);
+}
+.gloss-pop {
+  position: absolute; left: 50%; bottom: calc(100% + 0.55rem);
+  transform: translateX(-50%);
+  min-width: 15rem; max-width: 19rem;
+  background: var(--tinta); color: var(--papel);
+  font-size: 0.8125rem; line-height: 1.5; font-style: normal;
+  padding: 0.6rem 0.8rem; border-radius: 3px;
+  opacity: 0; visibility: hidden; transition: opacity 120ms ease;
+  z-index: 10; text-align: left;
+}
+.gloss-pop::after {
+  content: ""; position: absolute; top: 100%; left: 50%; transform: translateX(-50%);
+  border: 6px solid transparent; border-top-color: var(--tinta);
+}
+.gloss-pop i { color: #e8c9a8; }
+.gloss-pop small { display: block; margin-top: 0.25rem; opacity: 0.75; font-family: var(--caps); font-size: 0.6875rem; letter-spacing: 0.04em; }
+.gloss:hover .gloss-pop, .gloss:focus-within .gloss-pop, .gloss:focus .gloss-pop { opacity: 1; visibility: visible; }
+
+/* ---------- careo ---------- */
+.careo { max-width: none !important; margin: 2.4em 0; }
+.careo-titulo { font-family: var(--caps); font-size: 0.6875rem; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase; color: var(--rubrica); margin-bottom: 0.7rem; }
+.careo-chips { display: flex; flex-wrap: wrap; gap: 0.4rem; margin-bottom: 1rem; }
+.careo-chips button {
+  font-family: var(--caps); font-size: 0.75rem; font-weight: 500;
+  background: transparent; color: var(--tinta);
+  border: 1px solid var(--hairline); border-radius: 999px;
+  padding: 0.3rem 0.85rem; cursor: pointer;
+}
+.careo-chips button[aria-pressed="true"] { background: var(--tinta); color: var(--papel); border-color: var(--tinta); }
+.careo-grid { display: grid; gap: 1px; background: var(--hairline); border: 1px solid var(--hairline); overflow-x: auto; }
+.careo-col { background: var(--papel); min-width: 13rem; display: flex; flex-direction: column; }
+.careo-col.oculta { display: none; }
+.careo-col h4 {
+  margin: 0; padding: 0.7rem 0.9rem;
+  background: var(--tinte);
+  font-family: var(--caps); font-size: 0.8125rem; font-weight: 700; letter-spacing: 0.03em;
+}
+.careo-celda { padding: 0.7rem 0.9rem; font-size: 0.875rem; line-height: 1.55; border-top: 1px solid var(--hairline); flex: 1; }
+.careo-celda b { display: block; font-family: var(--caps); font-size: 0.65rem; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--tinta-suave); margin-bottom: 0.25rem; }
+
+/* ---------- índice de actas (portada) ---------- */
+.portada-titulo { font-size: clamp(2rem, 5vw, 3rem); font-weight: 600; line-height: 1.15; max-width: 34rem; margin: 0 0 0.8rem; }
+.portada-lema { font-style: italic; color: var(--tinta-suave); font-size: 1.15rem; max-width: 32rem; margin: 0 0 4rem; }
+.registro { list-style: none; margin: 0; padding: 0; }
+.registro li { border-top: 1px solid var(--hairline); }
+.registro a {
+  display: grid; grid-template-columns: 5.2rem 1fr; gap: 0 1.6rem;
+  padding: 1.5rem 0.4rem; text-decoration: none;
+}
+.registro a:hover { background: var(--tinte); }
+.registro .num { font-size: 2rem; font-weight: 300; color: var(--rubrica); line-height: 1.1; }
+.registro h3 { margin: 0 0 0.25rem; font-size: 1.22rem; font-weight: 600; }
+.registro p { margin: 0.3rem 0 0; color: var(--tinta-suave); font-size: 0.95rem; max-width: 38rem; }
+.registro .meta { font-family: var(--caps); font-size: 0.71rem; letter-spacing: 0.1em; text-transform: uppercase; color: var(--tinta-suave); }
+
+/* ---------- índice de pasajes ---------- */
+.libro-bloque { margin-bottom: 2.2rem; max-width: var(--col-lectura); }
+.libro-bloque h2 { font-size: 1.1rem; font-weight: 700; margin: 0 0 0.5rem; }
+.libro-bloque ul { list-style: none; margin: 0; padding: 0; }
+.libro-bloque li { display: flex; flex-wrap: wrap; gap: 0.6rem 1rem; align-items: baseline; padding: 0.4rem 0; border-top: 1px solid var(--hairline); font-size: 0.95rem; }
+.libro-bloque .cita { min-width: 11rem; font-weight: 500; }
+.libro-bloque .donde { font-family: var(--caps); font-size: 0.75rem; color: var(--tinta-suave); }
+
+footer.sitio { margin-top: 5rem; padding-top: 1.2rem; border-top: 1px solid var(--hairline); font-family: var(--caps); font-size: 0.75rem; color: var(--tinta-suave); display: flex; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem; }
+
+/* ---------- responsivo: las notas colapsan bajo demanda ---------- */
+@media (max-width: 1120px) {
+  .marco { max-width: calc(var(--col-lectura) + 2.5rem); }
+  .nota {
+    display: none;
+    float: none; width: auto; margin: 0.6rem 0 1rem;
+    padding: 0.7rem 0.9rem; background: var(--tinte); border-left: 2px solid var(--rubrica);
+  }
+  .nota-cb:checked + .nota { display: block; }
+  .gloss-pop { min-width: 12rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; }
+}
