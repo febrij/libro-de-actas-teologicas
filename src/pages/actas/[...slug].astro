@@ -26,6 +26,16 @@ const i = todas.findIndex((a) => a.id === acta.id);
 const anterior = i > 0 ? todas[i - 1] : null;
 const siguiente = i < todas.length - 1 ? todas[i + 1] : null;
 
+// Backlinks: qué actas y documentos citan a esta por su título
+const todasLasActas = await getCollection('actas', ({ data }) => !data.borrador);
+const documentos = await getCollection('documentos');
+const citadaEn = [
+  ...todasLasActas.filter((a) => a.id !== acta.id && (a.body ?? '').includes(d.titulo))
+    .map((a) => ({ url: `/actas/${a.id}`, etiqueta: `${romano(a.data.orden)} · ${a.data.titulo}` })),
+  ...documentos.filter((doc) => (doc.body ?? '').includes(d.titulo))
+    .map((doc) => ({ url: `/obra/${doc.id}`, etiqueta: doc.data.titulo })),
+];
+
 // Tiempo de lectura (~210 palabras/min en español)
 const palabras = (acta.body ?? '').split(/\s+/).length;
 const minutos = Math.max(1, Math.round(palabras / 210));
@@ -64,9 +74,16 @@ const urlEn = `https://translate.google.com/translate?sl=es&tl=en&u=${encodeURIC
     </details>
   )}
 
-  <article class="acta">
+  <article class="acta" data-pagefind-body>
     <Content components={{ Nota, Gloss, Careo, Conf, Epigrafe, Plegable }} />
   </article>
+
+  {citadaEn.length > 0 && (
+    <nav class="citada">
+      <span class="citada-rotulo">Citada en</span>
+      {citadaEn.map((c) => <a href={c.url}>{c.etiqueta}</a>)}
+    </nav>
+  )}
 
   {(anterior || siguiente) && (
     <nav class="acta-nav">

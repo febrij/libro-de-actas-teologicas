@@ -446,3 +446,29 @@ article.acta a[href^="http"]::after { content: " ↗"; font-size: 0.72em; color:
   padding: 0.14rem 0.5rem; cursor: pointer;
 }
 .ver-btn.activa { background: var(--rubrica); border-color: var(--rubrica); color: var(--papel); }
+
+
+/* ---------- versalitas de apertura de sección (tradición libresca) ---------- */
+article.acta h2 + p::first-line {
+  font-variant-caps: small-caps;
+  letter-spacing: 0.035em;
+}
+
+/* ---------- backlinks: citada en ---------- */
+.citada {
+  max-width: var(--col-lectura);
+  margin-top: 3rem; padding-top: 1rem; border-top: 1px solid var(--hairline);
+  display: flex; flex-wrap: wrap; gap: 0.45rem; align-items: baseline;
+}
+.citada-rotulo { font-family: var(--caps); font-size: 0.6875rem; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; color: var(--rubrica); margin-right: 0.3rem; }
+.citada a {
+  font-size: 0.83rem; text-decoration: none;
+  border: 1px solid var(--hairline); border-radius: 999px;
+  padding: 0.22rem 0.75rem;
+}
+.citada a:hover { border-color: var(--rubrica); color: var(--rubrica); }
+
+/* ---------- buscador (Pagefind, tematizado) ---------- */
+#buscador { max-width: var(--col-lectura); }
+#buscador .pagefind-ui { --pagefind-ui-primary: var(--rubrica); --pagefind-ui-text: var(--tinta); --pagefind-ui-background: var(--papel); --pagefind-ui-border: var(--hairline); --pagefind-ui-tag: var(--tinte); --pagefind-ui-border-radius: 2px; --pagefind-ui-font: var(--serif); }
+.enlace-acta { font-style: inherit; }

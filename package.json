@@ -4,11 +4,14 @@
   "version": "0.1.0",
   "scripts": {
     "dev": "astro dev",
-    "build": "astro build",
+    "build": "astro build && pagefind --site dist",
     "preview": "astro preview"
   },
   "dependencies": {
-    "astro": "^7.2.0",
-    "@astrojs/mdx": "*"
+    "@astrojs/mdx": "*",
+    "astro": "^7.2.0"
+  },
+  "devDependencies": {
+    "pagefind": "^1.5.2"
   }
 }

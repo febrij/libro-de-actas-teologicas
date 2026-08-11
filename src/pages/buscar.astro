@@ -1,0 +1,26 @@
+---
+import Base from '../layouts/Base.astro';
+---
+<Base titulo="Buscar en el corpus · Libro de actas">
+  <p class="eyebrow"><b>Aparato</b> · búsqueda de texto completo</p>
+  <h1 class="portada-titulo">Buscar en el corpus</h1>
+  <p class="portada-lema">Todas las actas y documentos de la obra, palabra por palabra.</p>
+
+  <link rel="stylesheet" href="/pagefind/pagefind-ui.css" />
+  <div id="buscador"></div>
+  <script is:inline data-astro-rerun src="/pagefind/pagefind-ui.js"></script>
+  <script is:inline data-astro-rerun>
+    window.addEventListener('DOMContentLoaded', montar);
+    document.addEventListener('astro:page-load', montar);
+    function montar() {
+      const caja = document.getElementById('buscador');
+      if (caja && !caja.dataset.listo && window.PagefindUI) {
+        caja.dataset.listo = '1';
+        new PagefindUI({ element: '#buscador', showSubResults: true, translations: {
+          placeholder: 'Buscar en las actas…', zero_results: 'Sin resultados para “[SEARCH_TERM]”',
+          clear_search: 'Limpiar', load_more: 'Más resultados', many_results: '[COUNT] resultados', one_result: '[COUNT] resultado'
+        }});
+      }
+    }
+  </script>
+</Base>

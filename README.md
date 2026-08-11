@@ -83,3 +83,6 @@ Para ajustar la paleta o la tipografía, todo vive en las variables al inicio de
 - **Modos de lectura**: papel / sepia / noche (botón ◐ en la cabecera; recuerda la preferencia).
 - **Componentes**: `<Epigrafe fuente="…">cita</Epigrafe>` y `<Plegable titulo="…">contenido</Plegable>` disponibles en cualquier acta.
 - **Frontmatter**: campo opcional `estado:` (p. ej. "Vigente", "En reposo deliberado") visible en la cabecera.
+- **Búsqueda** (`/buscar`): índice Pagefind generado en cada build (el comando `npm run build` ya lo incluye).
+- **Backlinks**: las menciones de otras actas por título se enlazan solas, y cada acta muestra "Citada en" al pie.
+- **RSS** en `/rss.xml`, **sitemap** en `/sitemap.xml`, página **404** propia.
