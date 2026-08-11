@@ -22,7 +22,7 @@ const series = (['olivo', 'cimientos'] as const).filter((s) => actas.some((a) =>
         {actas.filter((a) => a.data.serie === s).map((acta) => (
           <li>
             <a href={`/actas/${acta.id}`}>
-              <span class="num">{romano(acta.data.orden)}</span>
+              <span class="num" transition:name={`num-${acta.data.serie}-${acta.data.orden}`}>{romano(acta.data.orden)}</span>
               <span>
                 <span class="meta">{acta.data.loci} · {fechaLarga(acta.data.fecha)}</span>
                 <h3>{acta.data.titulo}</h3>

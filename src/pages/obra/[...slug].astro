@@ -43,6 +43,7 @@ const indice = headings.filter((h) => h.depth === 2 || h.depth === 3);
   </article>
 
   <script>
+    function prepararDoc() {
     document.querySelectorAll('article.acta table').forEach((t) => {
       const ths = [...t.querySelectorAll('thead th')].map((th) => th.textContent.trim());
       if (!ths.length) return;
@@ -52,5 +53,7 @@ const indice = headings.filter((h) => h.depth === 2 || h.depth === 3);
         });
       });
     });
+    }
+    document.addEventListener('astro:page-load', prepararDoc);
   </script>
 </Base>

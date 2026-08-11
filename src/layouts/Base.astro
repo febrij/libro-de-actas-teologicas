@@ -1,4 +1,5 @@
 ---
+import { ClientRouter } from 'astro:transitions';
 import '../styles/global.css';
 const { titulo = 'Libro de actas', descripcion = 'Actas teológicas verificables — una obra de cazador de ídolos' } = Astro.props;
 ---
@@ -18,15 +19,26 @@ const { titulo = 'Libro de actas', descripcion = 'Actas teológicas verificables
     <meta property="og:locale" content="es" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <ClientRouter />
+    <script is:inline>
+      // Tema antes del primer pintado, sin parpadeo
+      (function () {
+        var t = localStorage.getItem('tema');
+        if (!t) t = matchMedia('(prefers-color-scheme: dark)').matches ? 'noche' : 'papel';
+        if (t !== 'papel') document.documentElement.dataset.tema = t;
+      })();
+    </script>
     <link href="https://fonts.googleapis.com/css2?family=Literata:ital,opsz,wght@0,7..72,200..900;1,7..72,200..900&family=Archivo:wght@400;500;600;700&family=Gentium+Plus:ital@0;1&display=swap" rel="stylesheet" />
   </head>
   <body>
+    <div class="progreso" aria-hidden="true"><span></span></div>
     <div class="marco">
       <header class="sitio">
         <a class="marca" href="/">Libro de actas</a>
         <nav>
           <a href="/obra/indice-maestro">Mapa de la obra</a>
           <a href="/indice-pasajes">Índice de pasajes</a>
+          <button class="tema-btn" data-tema-btn type="button" title="Modo de lectura" aria-label="Cambiar modo de lectura">◐</button>
         </nav>
       </header>
       <slot />
@@ -35,5 +47,69 @@ const { titulo = 'Libro de actas', descripcion = 'Actas teológicas verificables
         <span>Soli Deo gloria</span>
       </footer>
     </div>
+    <script>
+      const ICONO = { papel: '○', sepia: '◐', noche: '●' };
+      const ORDEN = ['papel', 'sepia', 'noche'];
+
+      function temaActual() {
+        return document.documentElement.dataset.tema || 'papel';
+      }
+      function aplicarTema(t) {
+        if (t === 'papel') delete document.documentElement.dataset.tema;
+        else document.documentElement.dataset.tema = t;
+        localStorage.setItem('tema', t);
+        document.querySelectorAll('[data-tema-btn]').forEach((b) => (b.textContent = ICONO[t]));
+      }
+
+      function iniciar() {
+        // Botón de tema
+        document.querySelectorAll('[data-tema-btn]').forEach((b) => {
+          b.textContent = ICONO[temaActual()];
+          if (b.dataset.listo) return;
+          b.dataset.listo = '1';
+          b.addEventListener('click', () => {
+            const i = ORDEN.indexOf(temaActual());
+            aplicarTema(ORDEN[(i + 1) % ORDEN.length]);
+          });
+        });
+
+        // Barra de progreso: solo en páginas realmente largas
+        const barra = document.querySelector('.progreso');
+        const span = barra?.querySelector('span');
+        if (barra && span) {
+          const largo = () => document.documentElement.scrollHeight - innerHeight;
+          barra.classList.toggle('visible', largo() > innerHeight * 1.5);
+          let tick = false;
+          const pinta = () => {
+            span.style.width = Math.min(100, (scrollY / Math.max(1, largo())) * 100) + '%';
+            tick = false;
+          };
+          if (!document.body.dataset.progresoListo) {
+            document.body.dataset.progresoListo = '1';
+            addEventListener('scroll', () => { if (!tick) { tick = true; requestAnimationFrame(pinta); } }, { passive: true });
+          }
+          pinta();
+        }
+
+        // Scrollspy del índice + carril abierto en monitores anchos
+        const toc = document.querySelector('.toc');
+        if (toc) {
+          if (matchMedia('(min-width: 1720px)').matches) toc.setAttribute('open', '');
+          const enlaces = new Map();
+          toc.querySelectorAll('a[href^="#"]').forEach((a) => enlaces.set(decodeURIComponent(a.hash.slice(1)), a));
+          const obs = new IntersectionObserver((entradas) => {
+            entradas.forEach((e) => {
+              if (e.isIntersecting) {
+                toc.querySelectorAll('a.activo').forEach((a) => a.classList.remove('activo'));
+                enlaces.get(e.target.id)?.classList.add('activo');
+              }
+            });
+          }, { rootMargin: '0px 0px -75% 0px' });
+          document.querySelectorAll('article.acta h2[id], article.acta h3[id]').forEach((h) => obs.observe(h));
+        }
+      }
+
+      document.addEventListener('astro:page-load', iniciar);
+    </script>
   </body>
 </html>

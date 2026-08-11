@@ -303,3 +303,73 @@ h2:hover .ancla, h3:hover .ancla { color: var(--rubrica); }
 .serie-tag b { color: var(--rubrica); }
 .serie-lema { margin: 0.35rem 0 1.1rem; color: var(--tinta-suave); font-size: 0.95rem; max-width: 38rem; }
 .portada-lema { margin-bottom: 3rem; }
+
+/* ============================================================
+   Modos de lectura: papel (raíz) · sepia · noche
+   ============================================================ */
+:root { color-scheme: light; }
+
+[data-tema="sepia"] {
+  --papel: #f3ebdb;
+  --tinta: #3b2f23;
+  --tinta-suave: #7d6c56;
+  --rubrica: #8f2a1d;
+  --hairline: #ded2b9;
+  --tinte: #ebdfc8;
+}
+
+[data-tema="noche"] {
+  color-scheme: dark;
+  --papel: #16120e;
+  --tinta: #e9e2d4;
+  --tinta-suave: #a49b8a;
+  --rubrica: #d2705c;
+  --hairline: #2f2820;
+  --tinte: #211b15;
+}
+[data-tema="noche"] .gloss-pop { background: var(--tinte); color: var(--tinta); border: 1px solid var(--hairline); }
+[data-tema="noche"] .gloss-pop::after { border-top-color: var(--hairline); }
+[data-tema="noche"] .gloss-pop i { color: var(--rubrica); }
+[data-tema="noche"] .conf-alta { color: var(--papel); }
+
+html { transition: background-color 200ms ease, color 200ms ease; }
+
+/* conmutador de tema */
+.tema-btn {
+  background: transparent; border: 1px solid var(--hairline); border-radius: 999px;
+  color: var(--tinta); cursor: pointer;
+  font-size: 0.8rem; line-height: 1; padding: 0.32rem 0.6rem;
+  font-family: var(--caps);
+}
+.tema-btn:hover { border-color: var(--rubrica); color: var(--rubrica); }
+
+/* ---------- barra de progreso de lectura ---------- */
+.progreso {
+  position: fixed; top: 0; left: 0; right: 0; height: 2px;
+  z-index: 50; pointer-events: none; display: none;
+}
+.progreso span { display: block; height: 100%; width: 0; background: var(--rubrica); }
+.progreso.visible { display: block; }
+
+/* ---------- scrollspy del índice ---------- */
+.toc a.activo { color: var(--rubrica); font-weight: 600; }
+
+/* ---------- carril fijo del índice en monitores anchos ---------- */
+@media (min-width: 1720px) {
+  .toc {
+    position: fixed;
+    top: 5.5rem;
+    left: calc(50vw - 52.5rem - 1rem);
+    width: 15rem;
+    max-height: calc(100vh - 8rem);
+    overflow-y: auto;
+    margin: 0;
+  }
+  .toc summary { pointer-events: none; }
+  .toc summary::marker, .toc summary::-webkit-details-marker { display: none; }
+}
+
+/* ---------- transiciones de vista: respeto al movimiento reducido ---------- */
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*), ::view-transition-old(*), ::view-transition-new(*) { animation: none !important; }
+}

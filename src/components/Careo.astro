@@ -34,7 +34,10 @@ const { titulo = 'Careo', criterios = [], posturas = [] } = Astro.props as {
 </div>
 
 <script>
+  function prepararCareos() {
   document.querySelectorAll('[data-careo]').forEach((careo) => {
+    if (careo.dataset.listo) return;
+    careo.dataset.listo = '1';
     const grid = careo.querySelector('.careo-grid') as HTMLElement;
     const cols = careo.querySelectorAll('.careo-col');
     careo.querySelectorAll('.careo-chips button').forEach((btn) => {
@@ -48,4 +51,6 @@ const { titulo = 'Careo', criterios = [], posturas = [] } = Astro.props as {
       });
     });
   });
+  }
+  document.addEventListener('astro:page-load', prepararCareos);
 </script>
