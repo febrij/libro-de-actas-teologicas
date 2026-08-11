@@ -448,10 +448,13 @@ article.acta a[href^="http"]::after { content: " ↗"; font-size: 0.72em; color:
 .ver-btn.activa { background: var(--rubrica); border-color: var(--rubrica); color: var(--papel); }
 
 
-/* ---------- versalitas de apertura de sección (tradición libresca) ---------- */
-article.acta h2 + p::first-line {
-  font-variant-caps: small-caps;
-  letter-spacing: 0.035em;
+/* ---------- tic de rúbrica sobre cada sección ---------- */
+article.acta h2::before {
+  content: "";
+  display: block;
+  width: 1.8rem;
+  border-top: 2px solid var(--rubrica);
+  margin-bottom: 0.55rem;
 }
 
 /* ---------- backlinks: citada en ---------- */
