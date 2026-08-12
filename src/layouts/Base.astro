@@ -151,13 +151,45 @@ const imagenAbs = new URL(imagen, Astro.site).href;
           }
           return;
         }
-        const pa = e.target.closest?.('.pas-audio');
-        if (pa) {
-          e.preventDefault();
-          const P = pa.closest('.pas-pop');
-          if (P?.dataset.audio) hablar(P.dataset.audio, P.dataset.lang || 'es-ES', 0.95);
-        }
       });
+
+      // Barra de pronunciación sobre palabras griegas y hebreas (.orig)
+      let origBar = null, origActivo = null, origTimer = null;
+      function barraOrig() {
+        if (!origBar) {
+          origBar = document.createElement('div');
+          origBar.className = 'orig-bar';
+          origBar.innerHTML = '<button type="button" data-vel="n">▶</button><button type="button" data-vel="l">▶ lenta</button>';
+          origBar.addEventListener('pointerenter', () => clearTimeout(origTimer));
+          origBar.addEventListener('pointerleave', esconderOrig);
+          origBar.querySelectorAll('button').forEach((b) => b.addEventListener('click', () => {
+            if (!origActivo) return;
+            const lang = origActivo.getAttribute('lang') === 'he' ? 'he-IL' : 'el-GR';
+            hablar(origActivo.textContent, lang, b.dataset.vel === 'l' ? 0.45 : 0.85);
+          }));
+          document.body.appendChild(origBar);
+        }
+        return origBar;
+      }
+      function mostrarOrig(el) {
+        clearTimeout(origTimer);
+        origActivo = el;
+        const r = el.getBoundingClientRect();
+        const B = barraOrig();
+        B.classList.add('visible');
+        B.style.left = Math.max(8, Math.min(innerWidth - 130, r.left + r.width / 2 - 55)) + 'px';
+        B.style.top = Math.max(8, r.top - 40) + 'px';
+      }
+      function esconderOrig() {
+        origTimer = setTimeout(() => { origBar?.classList.remove('visible'); origActivo = null; }, 200);
+      }
+      document.addEventListener('pointerover', (e) => {
+        const el = e.target.closest?.('.orig');
+        if (el && el !== origActivo) mostrarOrig(el);
+        else if (el) clearTimeout(origTimer);
+      });
+      document.addEventListener('pointerout', (e) => { if (e.target.closest?.('.orig')) esconderOrig(); });
+      document.addEventListener('focusin', (e) => { const el = e.target.closest?.('.orig'); if (el) mostrarOrig(el); });
 
       // ---------- Popovers de pasajes bíblicos (RVA 1909) ----------
       const cacheBiblia = new Map();
@@ -221,7 +253,7 @@ const imagenAbs = new URL(imagen, Astro.site).href;
         const bg = `https://www.biblegateway.com/passage/?search=${encodeURIComponent(etiqueta)}&version=RVR1960`;
         const botones = Object.keys(VERSIONES).map((v) =>
           `<button type="button" class="ver-btn${v === versionPas ? ' activa' : ''}" data-ver="${v}">${v === 'rva' ? '1909' : 'KJV'}</button>`).join('');
-        P.innerHTML = `<h5>${etiqueta}<span class="ver-btns">${botones}</span></h5>${cuerpo}<footer><span>${VERSIONES[versionPas]}</span><span><button type="button" class="pas-audio" title="Escuchar">🔊</button> <a href="/biblia#${d.libro}/${c1}">Capítulo →</a> <a href="${bg}" target="_blank" rel="noopener">RVR60 ↗</a></span></footer>`;
+        P.innerHTML = `<h5>${etiqueta}<span class="ver-btns">${botones}</span></h5>${cuerpo}<footer><span>${VERSIONES[versionPas]}</span><span><a href="/biblia#${d.libro}/${c1}">Capítulo →</a> <a href="${bg}" target="_blank" rel="noopener">RVR60 ↗</a></span></footer>`;
         P.dataset.audio = Array.from(P.querySelectorAll('.v')).map((x) => x.textContent.replace(/^\d+:?/, '')).join(' ');
         P.dataset.lang = versionPas === 'kjv' ? 'en-US' : 'es-ES';
         P.querySelectorAll('.ver-btn').forEach((b) => b.addEventListener('click', (ev) => {
