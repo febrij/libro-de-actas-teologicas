@@ -30,11 +30,17 @@ const imagenAbs = new URL(imagen, Astro.site).href;
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <ClientRouter />
     <script is:inline>
-      // Tema antes del primer pintado, sin parpadeo
+      // Tema antes del primer pintado — y reaplicado tras cada navegación,
+      // porque las transiciones de vista reemplazan los atributos de <html>.
       (function () {
-        var t = localStorage.getItem('tema');
-        if (!t) t = matchMedia('(prefers-color-scheme: dark)').matches ? 'noche' : 'papel';
-        if (t !== 'papel') document.documentElement.dataset.tema = t;
+        function aplicar() {
+          var t = localStorage.getItem('tema');
+          if (!t) t = matchMedia('(prefers-color-scheme: dark)').matches ? 'noche' : 'papel';
+          if (t !== 'papel') document.documentElement.dataset.tema = t;
+          else delete document.documentElement.dataset.tema;
+        }
+        aplicar();
+        document.addEventListener('astro:after-swap', aplicar);
       })();
     </script>
     <link href="https://fonts.googleapis.com/css2?family=Literata:ital,opsz,wght@0,7..72,200..900;1,7..72,200..900&family=Archivo:wght@400;500;600;700&family=Gentium+Plus:ital@0;1&display=swap" rel="stylesheet" />
