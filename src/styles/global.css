@@ -97,6 +97,7 @@ header.sitio nav a:hover { color: var(--rubrica); }
 /* ---------- cuerpo de lectura ---------- */
 article.acta { counter-reset: nota; }
 article.acta > * { max-width: var(--col-lectura); }
+article.acta p { hyphens: auto; text-wrap: pretty; }
 article.acta h2 { font-size: 1.45rem; font-weight: 600; margin: 2.6em 0 0.7em; }
 article.acta h3 { font-size: 1.12rem; font-weight: 600; margin: 2.2em 0 0.5em; }
 article.acta h2 + p, article.acta h3 + p { margin-top: 0; }
@@ -487,8 +488,9 @@ article.acta h2::before {
     --papel: #fff; --tinta: #000; --tinta-suave: #444;
     --rubrica: #8f2a1d; --hairline: #bbb; --tinte: #f0f0f0;
   }
-  @page { margin: 2cm; }
-  body { font-size: 10.5pt; line-height: 1.55; }
+  @page { margin: 2.5cm 2cm; }
+  body { font-size: 11pt; line-height: 1.5; }
+  article.acta p { text-align: justify; hyphens: auto; }
   header.sitio, footer.sitio, .toc, .progreso, .tema-btn, .acta-nav, .citada,
   .ancla, .careo-chips, .acta-meta a, .plegable summary { display: none !important; }
   .plegable { border: 0; } .plegable-cuerpo { padding: 0; }
