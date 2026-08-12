@@ -621,3 +621,32 @@ a:focus-visible, button:focus-visible, summary:focus-visible, .pas:focus-visible
 .com-meta { font-family: var(--caps); font-size: 0.7rem; letter-spacing: 0.06em; color: var(--tinta-suave); }
 .coms-nueva { margin-top: 0.4rem; }
 @media print { .coms { display: none !important; } }
+
+
+/* ---------- lector bíblico ---------- */
+.lec-controles { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; margin-bottom: 1.6rem; }
+.lec-controles select {
+  font-family: var(--caps); font-size: 0.85rem; color: var(--tinta);
+  background: var(--papel); border: 1px solid var(--hairline); padding: 0.45rem 0.6rem;
+}
+.lec-ver { display: inline-flex; gap: 0.25rem; }
+.lec-ver button {
+  font-family: var(--caps); font-size: 0.72rem; font-weight: 600; letter-spacing: 0.06em;
+  background: transparent; color: var(--tinta-suave);
+  border: 1px solid var(--hairline); border-radius: 999px; padding: 0.35rem 0.8rem; cursor: pointer;
+}
+.lec-ver button[aria-pressed="true"] { background: var(--rubrica); border-color: var(--rubrica); color: var(--papel); }
+.lec-texto h2 { margin-top: 0.4rem; }
+.lec-v { cursor: pointer; }
+.lec-v sup { color: var(--rubrica); font-family: var(--caps); font-size: 0.65rem; font-weight: 700; margin-right: 0.35rem; }
+.lec-v:hover { background: var(--tinte); }
+.lec-marcado { background: var(--tinte); box-shadow: inset 2px 0 0 var(--rubrica); padding-left: 0.4rem; }
+.lec-nav { max-width: var(--col-lectura); display: flex; justify-content: space-between; margin-top: 2rem; }
+.pas-audio { background: none; border: 0; cursor: pointer; font-size: 0.9rem; padding: 0; }
+.gloss-audio { display: block; margin-top: 0.35rem; }
+.gloss-audio button {
+  font-family: var(--caps); font-size: 0.62rem; font-weight: 600; letter-spacing: 0.06em;
+  background: transparent; color: #e8c9a8; border: 1px solid rgba(232,201,168,0.5);
+  border-radius: 999px; padding: 0.15rem 0.55rem; margin-right: 0.3rem; cursor: pointer;
+}
+[data-tema="noche"] .gloss-audio button { color: var(--rubrica); border-color: var(--rubrica); }

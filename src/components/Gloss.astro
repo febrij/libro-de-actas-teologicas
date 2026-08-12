@@ -5,4 +5,4 @@
 const { palabra, translit, es, ref = '', lang = 'grc' } = Astro.props;
 const dir = lang === 'he' ? 'rtl' : 'ltr';
 ---
-<span class="gloss" tabindex="0"><span class="gloss-word" lang={lang} dir={dir} translate="no">{palabra}</span><span class="gloss-pop" role="tooltip"><i>{translit}</i> — {es}{ref && <small>{ref}</small>}</span></span>
+<span class="gloss" tabindex="0"><span class="gloss-word" lang={lang} dir={dir} translate="no">{palabra}</span><span class="gloss-pop" role="tooltip"><i>{translit}</i> — {es}<span class="gloss-audio"><button type="button" data-vel="n" title="Escuchar (pronunciación moderna)">▶</button><button type="button" data-vel="l" title="Escuchar lenta">▶ lenta</button></span>{ref && <small>{ref}</small>}</span></span>

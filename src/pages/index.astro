@@ -45,6 +45,16 @@ const series = (['olivo', 'cimientos', 'auditorias'] as const).filter((s) => act
       <p class="eyebrow serie-tag"><b>La obra</b></p>
       <p class="serie-lema">El mapa y el plan: dónde encaja cada acta y qué viene después.</p>
       <ol class="registro">
+        <li>
+          <a href="/biblioteca">
+            <span class="num">§</span>
+            <span>
+              <span class="meta">Aparato</span>
+              <h3>Biblioteca</h3>
+              <p>Las salas de consulta donde viven las fuentes primarias que las actas citan.</p>
+            </span>
+          </a>
+        </li>
         {documentos.map((doc) => (
           <li>
             <a href={`/obra/${doc.id}`}>

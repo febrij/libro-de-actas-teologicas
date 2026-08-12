@@ -1,0 +1,150 @@
+---
+import Base from '../layouts/Base.astro';
+import mapa from '../lib/biblia-mapa.json';
+const libros = mapa.map(({ slug, nombre }) => ({ slug, nombre }));
+---
+<Base titulo="Biblia · Libro de actas" descripcion="Lector bíblico del sitio: Reina-Valera 1909 y KJV, con enlaces por versículo.">
+  <p class="eyebrow"><b>Aparato</b> · el tribunal de todo</p>
+  <h1 class="portada-titulo">Biblia</h1>
+  <p class="portada-lema">Las mismas dos versiones de dominio público que sirven a los popovers — Reina-Valera 1909 y King James — como lector completo. Toca un versículo para copiar su enlace.</p>
+
+  <div class="lec-controles">
+    <select id="lec-libro" aria-label="Libro">
+      {libros.map((l) => <option value={l.slug}>{l.nombre}</option>)}
+    </select>
+    <select id="lec-cap" aria-label="Capítulo"></select>
+    <div class="lec-ver" role="group" aria-label="Versión">
+      <button type="button" data-ver="rva" aria-pressed="true">1909</button>
+      <button type="button" data-ver="kjv" aria-pressed="false">KJV</button>
+    </div>
+    <button type="button" id="lec-audio" class="ber-btn" title="Escuchar el capítulo">🔊 Escuchar</button>
+  </div>
+
+  <article class="acta lec-texto" id="lec-texto" aria-live="polite"></article>
+
+  <nav class="lec-nav">
+    <button type="button" id="lec-ant" class="ber-btn">← Anterior</button>
+    <button type="button" id="lec-sig" class="ber-btn ber-sig">Siguiente →</button>
+  </nav>
+
+  <p class="obs-pista">Dominio público: RVA 1909 y KJV. Para citar ante terceros, el paso bereano de siempre: cotejar con tu Biblia impresa.</p>
+
+  <script define:vars={{ libros }}>
+    function iniciarLector() {
+      const cont = document.getElementById('lec-texto');
+      if (!cont || cont.dataset.listo) return;
+      cont.dataset.listo = '1';
+
+      const $ = (id) => document.getElementById(id);
+      const selLibro = $('lec-libro'), selCap = $('lec-cap');
+      const cache = new Map();
+      let version = localStorage.getItem('biblia-version') || 'rva';
+      let libro = 'genesis', cap = 1, leyendo = false;
+
+      const idx = new Map(libros.map((l, i) => [l.slug, i]));
+
+      async function datos(slug, ver) {
+        const k = ver + '/' + slug;
+        if (!cache.has(k)) {
+          const ruta = ver === 'kjv' ? `/biblia/kjv/${slug}.json` : `/biblia/${slug}.json`;
+          cache.set(k, fetch(ruta).then((r) => r.json()));
+        }
+        return cache.get(k);
+      }
+
+      function leeHash() {
+        const m = location.hash.slice(1).split('/');
+        if (m[0] && idx.has(m[0])) libro = m[0];
+        if (m[1] && +m[1] > 0) cap = +m[1];
+        return m[2] ? +m[2] : null;
+      }
+      function escribeHash(verso) {
+        history.replaceState(null, '', '#' + libro + '/' + cap + (verso ? '/' + verso : ''));
+      }
+
+      async function pinta(versoDestino) {
+        pararAudio();
+        const d = await datos(libro, version);
+        const caps = Object.keys(d.capitulos).map(Number);
+        const maxCap = Math.max(...caps);
+        if (cap > maxCap) cap = maxCap;
+        selLibro.value = libro;
+        selCap.innerHTML = caps.map((c) => `<option value="${c}">${c}</option>`).join('');
+        selCap.value = String(cap);
+        const versos = d.capitulos[cap] || {};
+        cont.innerHTML = `<h2>${d.nombre} ${cap}</h2>` + Object.keys(versos).map((v) =>
+          `<p class="v lec-v" id="v-${v}"><sup>${v}</sup>${versos[v]}</p>`).join('');
+        escribeHash(versoDestino);
+        if (versoDestino) {
+          const el = document.getElementById('v-' + versoDestino);
+          if (el) { el.classList.add('lec-marcado'); el.scrollIntoView({ block: 'center' }); }
+        } else scrollTo({ top: 0 });
+      }
+
+      function pararAudio() {
+        try { speechSynthesis.cancel(); } catch {}
+        leyendo = false;
+        $('lec-audio').textContent = '🔊 Escuchar';
+      }
+      $('lec-audio').addEventListener('click', async () => {
+        if (leyendo) { pararAudio(); return; }
+        const d = await datos(libro, version);
+        const versos = d.capitulos[cap] || {};
+        leyendo = true;
+        $('lec-audio').textContent = '■ Detener';
+        const lang = version === 'kjv' ? 'en-US' : 'es-ES';
+        const claves = Object.keys(versos);
+        claves.forEach((v, i) => {
+          const u = new SpeechSynthesisUtterance(versos[v]);
+          u.lang = lang; u.rate = 0.95;
+          if (i === claves.length - 1) u.onend = pararAudio;
+          try { speechSynthesis.speak(u); } catch {}
+        });
+      });
+
+      selLibro.addEventListener('change', () => { libro = selLibro.value; cap = 1; pinta(); });
+      selCap.addEventListener('change', () => { cap = +selCap.value; pinta(); });
+      $('lec-ant').addEventListener('click', async () => {
+        if (cap > 1) { cap--; pinta(); return; }
+        const i = idx.get(libro);
+        if (i > 0) {
+          libro = libros[i - 1].slug;
+          const d = await datos(libro, version);
+          cap = Math.max(...Object.keys(d.capitulos).map(Number));
+          pinta();
+        }
+      });
+      $('lec-sig').addEventListener('click', async () => {
+        const d = await datos(libro, version);
+        if (cap < Math.max(...Object.keys(d.capitulos).map(Number))) { cap++; pinta(); }
+        else { const i = idx.get(libro); if (i < libros.length - 1) { libro = libros[i + 1].slug; cap = 1; pinta(); } }
+      });
+      document.querySelectorAll('.lec-ver button').forEach((b) => {
+        b.setAttribute('aria-pressed', String(b.dataset.ver === version));
+        b.addEventListener('click', () => {
+          version = b.dataset.ver;
+          localStorage.setItem('biblia-version', version);
+          document.querySelectorAll('.lec-ver button').forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
+          pinta();
+        });
+      });
+      cont.addEventListener('click', (e) => {
+        const v = e.target.closest?.('.lec-v');
+        if (!v) return;
+        const num = v.id.replace('v-', '');
+        escribeHash(num);
+        navigator.clipboard?.writeText(location.origin + '/biblia#' + libro + '/' + cap + '/' + num);
+        document.querySelectorAll('.lec-marcado').forEach((x) => x.classList.remove('lec-marcado'));
+        v.classList.add('lec-marcado');
+        const ok = document.createElement('div');
+        ok.className = 'obs-ok'; ok.textContent = 'Enlace del versículo copiado';
+        document.body.appendChild(ok); setTimeout(() => ok.remove(), 1800);
+      });
+      addEventListener('hashchange', () => { const v = leeHash(); pinta(v); });
+
+      const v0 = leeHash();
+      pinta(v0);
+    }
+    document.addEventListener('astro:page-load', iniciarLector);
+  </script>
+</Base>

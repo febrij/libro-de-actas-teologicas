@@ -51,6 +51,7 @@ const imagenAbs = new URL(imagen, Astro.site).href;
       <header class="sitio">
         <a class="marca" href="/">Libro de actas</a>
         <nav>
+          <a href="/biblia">Biblia</a>
           <a href="/obra/indice-maestro">Mapa de la obra</a>
           <a href="/indice-pasajes">Índice de pasajes</a>
           <a href="/buscar">Buscar</a>
@@ -126,6 +127,38 @@ const imagenAbs = new URL(imagen, Astro.site).href;
         }
       }
 
+      // ---------- Voz: glosas y pasajes (síntesis del navegador) ----------
+      function hablar(texto, lang, rate) {
+        try {
+          speechSynthesis.cancel();
+          const u = new SpeechSynthesisUtterance(texto);
+          u.lang = lang; u.rate = rate;
+          const voz = speechSynthesis.getVoices().find((v) => v.lang && v.lang.startsWith(lang.split('-')[0]));
+          if (voz) u.voice = voz;
+          speechSynthesis.speak(u);
+        } catch {}
+      }
+      try { speechSynthesis.getVoices(); } catch {}
+      document.addEventListener('click', (e) => {
+        const g = e.target.closest?.('.gloss-audio button');
+        if (g) {
+          e.preventDefault();
+          const gloss = g.closest('.gloss');
+          const palabra = gloss?.querySelector('.gloss-word');
+          if (palabra) {
+            const lang = palabra.getAttribute('lang') === 'he' ? 'he-IL' : 'el-GR';
+            hablar(palabra.textContent, lang, g.dataset.vel === 'l' ? 0.45 : 0.85);
+          }
+          return;
+        }
+        const pa = e.target.closest?.('.pas-audio');
+        if (pa) {
+          e.preventDefault();
+          const P = pa.closest('.pas-pop');
+          if (P?.dataset.audio) hablar(P.dataset.audio, P.dataset.lang || 'es-ES', 0.95);
+        }
+      });
+
       // ---------- Popovers de pasajes bíblicos (RVA 1909) ----------
       const cacheBiblia = new Map();
       const VERSIONES = { rva: 'RVA 1909 · dominio público', kjv: 'KJV · dominio público' };
@@ -188,7 +221,9 @@ const imagenAbs = new URL(imagen, Astro.site).href;
         const bg = `https://www.biblegateway.com/passage/?search=${encodeURIComponent(etiqueta)}&version=RVR1960`;
         const botones = Object.keys(VERSIONES).map((v) =>
           `<button type="button" class="ver-btn${v === versionPas ? ' activa' : ''}" data-ver="${v}">${v === 'rva' ? '1909' : 'KJV'}</button>`).join('');
-        P.innerHTML = `<h5>${etiqueta}<span class="ver-btns">${botones}</span></h5>${cuerpo}<footer><span>${VERSIONES[versionPas]}</span><a href="${bg}" target="_blank" rel="noopener">Cotejar en RVR60 ↗</a></footer>`;
+        P.innerHTML = `<h5>${etiqueta}<span class="ver-btns">${botones}</span></h5>${cuerpo}<footer><span>${VERSIONES[versionPas]}</span><span><button type="button" class="pas-audio" title="Escuchar">🔊</button> <a href="/biblia#${d.libro}/${c1}">Capítulo →</a> <a href="${bg}" target="_blank" rel="noopener">RVR60 ↗</a></span></footer>`;
+        P.dataset.audio = Array.from(P.querySelectorAll('.v')).map((x) => x.textContent.replace(/^\d+:?/, '')).join(' ');
+        P.dataset.lang = versionPas === 'kjv' ? 'en-US' : 'es-ES';
         P.querySelectorAll('.ver-btn').forEach((b) => b.addEventListener('click', (ev) => {
           ev.stopPropagation();
           versionPas = b.dataset.ver;

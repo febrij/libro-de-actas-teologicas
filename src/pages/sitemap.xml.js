@@ -3,7 +3,7 @@ import { getCollection } from 'astro:content';
 export async function GET(context) {
   const actas = await getCollection('actas', ({ data }) => !data.borrador);
   const docs = await getCollection('documentos');
-  const urls = ['', 'indice-pasajes/', 'buscar/', 'bereano/',
+  const urls = ['', 'indice-pasajes/', 'buscar/', 'bereano/', 'biblia/', 'biblioteca/',
     ...actas.map((a) => `actas/${a.id}/`),
     ...docs.map((d) => `obra/${d.id}/`)];
   const cuerpo = urls.map((u) => `<url><loc>${context.site}${u}</loc></url>`).join('');

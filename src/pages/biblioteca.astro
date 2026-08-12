@@ -1,0 +1,33 @@
+---
+import Base from '../layouts/Base.astro';
+const salas = [
+  { nombre: 'Sefaria', url: 'https://www.sefaria.org', que: 'Talmud, Tárgumes y midrashim en texto completo — Sanedrín 98, Sukkah 52a y las fuentes rabínicas que las actas citan, verificables en su original.' },
+  { nombre: 'Christian Classics Ethereal Library', url: 'https://www.ccel.org', que: 'Los clásicos cristianos de dominio público en inglés: Justino, Orígenes, Agustín, y la tradición que comparece en los careos.' },
+  { nombre: 'Proyecto Gutenberg', url: 'https://www.gutenberg.org', que: 'Decenas de miles de obras libres de derechos, con sección en español.' },
+  { nombre: 'Internet Archive', url: 'https://archive.org', que: 'Ediciones escaneadas de las obras citadas en los registros — Driver y Neubauer, las fuentes históricas, las primeras ediciones.' },
+  { nombre: 'STEP Bible (Tyndale House)', url: 'https://www.stepbible.org', que: 'Textos originales con léxicos y gramática: el hebreo y el griego detrás de las glosas, con herramientas académicas gratuitas.' },
+  { nombre: 'BibleHub', url: 'https://biblehub.com', que: 'Interlineales, concordancias y comparación de versiones verso a verso — útil para el cotejo rápido del paso bereano.' },
+];
+---
+<Base titulo="Biblioteca · Libro de actas" descripcion="Las salas de consulta donde viven las fuentes primarias de las actas.">
+  <p class="eyebrow"><b>Aparato</b> · las salas de consulta</p>
+  <h1 class="portada-titulo">Biblioteca</h1>
+  <p class="portada-lema">Donde viven las fuentes primarias que las actas citan: para verificar, no para creer de oídas. Todas gratuitas; ninguna requiere registro para leer.</p>
+
+  <ol class="registro">
+    {salas.map((s) => (
+      <li>
+        <a href={s.url} target="_blank" rel="noopener">
+          <span class="num">§</span>
+          <span>
+            <span class="meta">{new URL(s.url).hostname}</span>
+            <h3>{s.nombre} ↗</h3>
+            <p>{s.que}</p>
+          </span>
+        </a>
+      </li>
+    ))}
+  </ol>
+
+  <p class="obs-pista">En preparación: obras completas de dominio público alojadas aquí mismo, una por una y con su licencia verificada — las traducciones al español suelen tener derechos propios aunque el original sea libre, y esta casa no publica lo que no puede acreditar.</p>
+</Base>
